@@ -1,8 +1,12 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
----
+export const prerender = false;
 
-<Layout>
-	<Welcome />
-</Layout>
+const cookies = Astro.request.headers.get("cookie") || "";
+const hasToken = cookies.includes("authToken=");
+
+if (hasToken) {
+  return Astro.redirect("/dashboard");
+} else {
+  return Astro.redirect("/login");
+}
+---
