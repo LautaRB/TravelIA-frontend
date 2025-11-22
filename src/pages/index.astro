@@ -1,5 +1,6 @@
 ---
 export const prerender = false;
+import Layout from "../layouts/Layout.astro";
 
 const cookies = Astro.request.headers.get("cookie") || "";
 const hasToken = cookies.includes("authToken=");
@@ -10,3 +11,5 @@ if (hasToken) {
   return Astro.redirect("/login");
 }
 ---
+
+<Layout></Layout>
