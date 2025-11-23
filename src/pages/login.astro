@@ -6,7 +6,9 @@ import Layout from "../layouts/BaseLayout.astro";
 <Layout>
   <html lang="es">
     <body class="min-h-screen flex items-center justify-center bg-ocean-50 p-4">
-      <div class="w-full h-full max-w-md bg-white shadow-lg rounded-xl p-8 space-y-6">
+      <div
+        class="w-full h-full max-w-md bg-white shadow-lg rounded-xl p-8 space-y-6"
+      >
         <!-- Logo -->
         <div class="flex justify-center">
           <img src="/logo.svg" alt="TravelIA Logo" class="w-20 h-20" />
@@ -18,17 +20,21 @@ import Layout from "../layouts/BaseLayout.astro";
         </h1>
 
         <!-- Formulario -->
-        <form class="space-y-4">
+        <form id="loginForm" class="space-y-4">
           <input
+            id="username"
             type="text"
             placeholder="Usuario"
             class="w-full px-4 py-2 border border-ocean-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ocean-500"
+            required
           />
 
           <input
+            id="password"
             type="password"
             placeholder="Contraseña"
             class="w-full px-4 py-2 border border-ocean-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ocean-500"
+            required
           />
 
           <button
@@ -66,5 +72,41 @@ import Layout from "../layouts/BaseLayout.astro";
         </p>
       </div>
     </body>
+
+    <script>
+      import { login } from "../services/api/authAPI.ts";
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const form = document.querySelector(
+          "#loginForm"
+        ) as HTMLFormElement | null;
+
+        if (!form) {
+          console.error("No se encontró el formulario de login");
+          return;
+        }
+
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const username = (
+            document.getElementById("username") as HTMLInputElement
+          ).value;
+          const password = (
+            document.getElementById("password") as HTMLInputElement
+          ).value;
+
+          try {
+            const data = await login(username, password);
+            
+            document.cookie = `authToken=${data.token}; path=/; secure; samesite=strict`;
+
+            window.location.href = "/dashboard/dashboard";
+          } catch (error) {
+            alert("Usuario o contraseña incorrectos");
+          }
+        });
+      });
+    </script>
   </html>
 </Layout>
