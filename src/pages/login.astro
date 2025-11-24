@@ -1,5 +1,5 @@
 ---
-export const prerender = false;
+//export const prerender = false;
 import Layout from "../layouts/BaseLayout.astro";
 ---
 
@@ -63,8 +63,9 @@ import Layout from "../layouts/BaseLayout.astro";
         <!-- Registro -->
         <p class="text-center text-ocean-700">
           ¿No tenés una cuenta?
+          {/* href="/register" */}
           <a
-            href="/register"
+            href="/register/index.html"
             class="text-ocean-600 font-medium hover:underline"
           >
             Registrate!
@@ -101,9 +102,10 @@ import Layout from "../layouts/BaseLayout.astro";
             
             document.cookie = `authToken=${data.token}; path=/; secure; samesite=strict`;
 
-            window.location.href = "/dashboard/dashboard";
-          } catch (error) {
-            alert("Usuario o contraseña incorrectos");
+            //window.location.href = "/dashboard/dashboard";
+            window.location.href = "/dashboard/dashboard/index.html";
+          } catch (error: any) {
+            alert("Error al iniciar sesión: " + error.message);
           }
         });
       });

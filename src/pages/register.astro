@@ -1,12 +1,14 @@
 ---
-export const prerender = false;
+//export const prerender = false;
 import Layout from "../layouts/BaseLayout.astro";
 ---
 
 <Layout>
-    <html lang="es">
+  <html lang="es">
     <body class="min-h-screen flex items-center justify-center bg-ocean-50 p-4">
-      <div class="w-full h-full max-w-md bg-white shadow-lg rounded-xl p-8 space-y-6">
+      <div
+        class="w-full h-full max-w-md bg-white shadow-lg rounded-xl p-8 space-y-6"
+      >
         <!-- Logo -->
         <div class="flex justify-center">
           <img src="/logo.svg" alt="TravelIA Logo" class="w-20 h-20" />
@@ -63,8 +65,9 @@ import Layout from "../layouts/BaseLayout.astro";
         <!-- Inicio de Sesión -->
         <p class="text-center text-ocean-700">
           ¿Ya tenés una cuenta?
-          <a
-            href="/login"
+          {/* href="/login" */}
+          <a  
+            href="/login/index.html"
             class="text-ocean-600 font-medium hover:underline"
           >
             Inicia sesión!

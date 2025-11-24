@@ -1,14 +1,16 @@
 ---
-export const prerender = false;
+//export const prerender = false;
 import Layout from "../layouts/BaseLayout.astro";
 
 const cookies = Astro.request.headers.get("cookie") || "";
 const hasToken = cookies.includes("authToken=");
 
 if (hasToken) {
-  return Astro.redirect("/dashboard");
+  //return Astro.redirect("/dashboard");
+  return Astro.redirect("/dashboard/dashboard/index.html");
 } else {
-  return Astro.redirect("/login");
+  //return Astro.redirect("/login");
+  return Astro.redirect("/login/index.html");
 }
 ---
 
