@@ -54,6 +54,7 @@ import Layout from "../layouts/BaseLayout.astro";
 
         <!-- Botón Google -->
         <button
+          id="googleLoginBtn"
           class="w-full flex items-center justify-center gap-3 border border-ocean-300 py-2 rounded-lg hover:bg-ocean-100 transition"
         >
           <img src="/google-icon.svg" alt="Google" class="w-5 h-5" />
@@ -74,41 +75,6 @@ import Layout from "../layouts/BaseLayout.astro";
       </div>
     </body>
 
-    <script>
-      import { login } from "../services/api/authAPI.ts";
-
-      document.addEventListener("DOMContentLoaded", () => {
-        const form = document.querySelector(
-          "#loginForm"
-        ) as HTMLFormElement | null;
-
-        if (!form) {
-          console.error("No se encontró el formulario de login");
-          return;
-        }
-
-        form.addEventListener("submit", async (e) => {
-          e.preventDefault();
-
-          const username = (
-            document.getElementById("username") as HTMLInputElement
-          ).value;
-          const password = (
-            document.getElementById("password") as HTMLInputElement
-          ).value;
-
-          try {
-            const data = await login(username, password);
-            
-            document.cookie = `authToken=${data.token}; path=/; secure; samesite=strict`;
-
-            //window.location.href = "/dashboard/dashboard";
-            window.location.href = "/dashboard/dashboard/index.html";
-          } catch (error: any) {
-            alert("Error al iniciar sesión: " + error.message);
-          }
-        });
-      });
-    </script>
+    <script type="module" src="/scripts/login.js"></script>
   </html>
 </Layout>
