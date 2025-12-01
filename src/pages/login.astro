@@ -1,80 +1,151 @@
 ---
-//export const prerender = false;
 import Layout from "../layouts/BaseLayout.astro";
 ---
 
-<Layout>
-  <html lang="es">
-    <body class="min-h-screen flex items-center justify-center bg-ocean-50 p-4">
-      <div
-        class="w-full h-full max-w-md bg-white shadow-lg rounded-xl p-8 space-y-6"
-      >
-        <!-- Logo -->
-        <div class="flex justify-center">
-          <img src="/logo.svg" alt="TravelIA Logo" class="w-20 h-20" />
-        </div>
-
-        <!-- Título -->
-        <h1 class="text-2xl font-semibold text-center text-ocean-800">
-          Inicia sesión en TravelIA
-        </h1>
-
-        <!-- Formulario -->
-        <form id="loginForm" class="space-y-4">
-          <input
-            id="username"
-            type="text"
-            placeholder="Usuario"
-            class="w-full px-4 py-2 border border-ocean-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ocean-500"
-            required
-          />
-
-          <input
-            id="password"
-            type="password"
-            placeholder="Contraseña"
-            class="w-full px-4 py-2 border border-ocean-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ocean-500"
-            required
-          />
-
-          <button
-            type="submit"
-            class="w-full bg-ocean-500 hover:bg-ocean-600 text-white py-2 rounded-lg font-medium transition"
-          >
-            Iniciar sesión
-          </button>
-        </form>
-
-        <!-- Separador -->
-        <div class="flex items-center justify-center gap-4 text-ocean-400">
-          <span class="flex-1 h-px bg-ocean-200"></span>
-          O
-          <span class="flex-1 h-px bg-ocean-200"></span>
-        </div>
-
-        <!-- Botón Google -->
-        <button
-          id="googleLoginBtn"
-          class="w-full flex items-center justify-center gap-3 border border-ocean-300 py-2 rounded-lg hover:bg-ocean-100 transition"
-        >
-          <img src="/google-icon.svg" alt="Google" class="w-5 h-5" />
-          Iniciar sesión con Google
-        </button>
-
-        <!-- Registro -->
-        <p class="text-center text-ocean-700">
-          ¿No tenés una cuenta?
-          {/* href="/register" */}
-          <a
-            href="/register/index.html"
-            class="text-ocean-600 font-medium hover:underline"
-          >
-            Registrate!
-          </a>
-        </p>
+<Layout title="Iniciar Sesión - TravelIA">
+  <div class="min-h-screen flex items-center justify-center bg-ocean-50 p-4">
+    <div class="w-full h-full max-w-md bg-white shadow-lg rounded-xl p-8 space-y-6">
+      
+      <div class="flex justify-center">
+        <img src="/logo.svg" alt="TravelIA Logo" class="w-20 h-20" />
       </div>
-    </body>
 
-    <script type="module" src="/scripts/login.js"></script>
-  </html>
+      <h1 class="text-2xl font-semibold text-center text-ocean-800">
+        Inicia sesión en TravelIA
+      </h1>
+
+      <form id="loginForm" class="space-y-4">
+        <input
+          id="username"
+          type="text"
+          placeholder="Usuario"
+          class="w-full px-4 py-2 border border-ocean-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ocean-500"
+          required
+        />
+
+        <input
+          id="password"
+          type="password"
+          placeholder="Contraseña"
+          class="w-full px-4 py-2 border border-ocean-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ocean-500"
+          required
+        />
+
+        <button
+          type="submit"
+          class="w-full bg-ocean-500 hover:bg-ocean-600 text-white py-2 rounded-lg font-medium transition"
+        >
+          Iniciar sesión
+        </button>
+      </form>
+
+      <div class="flex items-center justify-center gap-4 text-ocean-400">
+        <span class="flex-1 h-px bg-ocean-200"></span>
+        O
+        <span class="flex-1 h-px bg-ocean-200"></span>
+      </div>
+
+      <button
+        id="googleLoginBtn"
+        type="button"
+        class="w-full flex items-center justify-center gap-3 border border-ocean-300 py-2 rounded-lg hover:bg-ocean-100 transition"
+      >
+        <img src="/google-icon.svg" alt="Google" class="w-5 h-5" />
+        Iniciar sesión con Google
+      </button>
+
+      <p class="text-center text-ocean-700">
+        ¿No tenés una cuenta?
+        <a
+          href="/register/index.html" 
+          class="text-ocean-600 font-medium hover:underline"
+        >
+          Registrate!
+        </a>
+      </p>
+    </div>
+  </div>
 </Layout>
+
+<script>
+  import { Capacitor } from "@capacitor/core";
+  import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
+  import { initializeApp } from "firebase/app";
+  import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+  import { login, firebaseLogin } from "../services/api/authAPI"; 
+
+  const isNative = Capacitor.isNativePlatform();
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBtmT9xPjwStMiL5f6-T-HTfCIKIW65Nl0",
+    authDomain: "travelia-81216.firebaseapp.com",
+    projectId: "travelia-81216",
+    appId: "1:360414482088:web:d8741625365a300241fc9d",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+  if (!isNative) {
+      GoogleAuth.initialize({
+          clientId: "360414482088-rtp2h0ao33g08ovo4fa2q6rk0c2n1aos.apps.googleusercontent.com",
+          scopes: ["profile", "email"],
+          grantOfflineAccess: true
+      });
+  }
+
+  const googleBtn = document.getElementById("googleLoginBtn");
+
+  if (googleBtn) {
+    googleBtn.addEventListener("click", async () => {
+      console.log("Iniciando proceso de Google Login...");
+      
+      try {
+        let idToken;
+
+        if (isNative) {
+          // --- ANDROID / NATIVO ---
+          console.log("Detectado entorno Nativo. Usando Capacitor GoogleAuth.");
+          const user = await GoogleAuth.signIn();
+          idToken = user.authentication.idToken;
+          console.log("Token nativo obtenido con éxito.");
+        } else {
+          // --- WEB ---
+          console.log("Detectado entorno Web. Usando Firebase Popup.");
+          const result = await signInWithPopup(auth, provider);
+          idToken = await result.user.getIdToken();
+        }
+
+        console.log("Enviando token al backend...");
+        const data = await firebaseLogin(idToken);
+        
+        document.cookie = `authToken=${data.access}; path=/; secure; samesite=strict`;
+        window.location.href = "/dashboard/dashboard/index.html";
+
+      } catch (error: any) {
+        console.error("Error en Login Google:", error);
+        alert("Error al iniciar sesión: " + (error.message || JSON.stringify(error)));
+      }
+    });
+  }
+
+  const form = document.getElementById("loginForm");
+  if (form) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const usernameInput = document.getElementById("username") as HTMLInputElement;
+      const passwordInput = document.getElementById("password") as HTMLInputElement;
+
+      if(usernameInput && passwordInput) {
+          try {
+            const data = await login(usernameInput.value, passwordInput.value);
+            document.cookie = `authToken=${data.token}; path=/; secure; samesite=strict`;
+            window.location.href = "/dashboard/dashboard/index.html"; 
+          } catch (error: any) {
+            alert("Error: " + error.message);
+          }
+      }
+    });
+  }
+</script>
