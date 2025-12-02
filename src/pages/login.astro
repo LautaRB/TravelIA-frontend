@@ -4,8 +4,9 @@ import Layout from "../layouts/BaseLayout.astro";
 
 <Layout title="Iniciar Sesión - TravelIA">
   <div class="min-h-screen flex items-center justify-center bg-ocean-50 p-4">
-    <div class="w-full h-full max-w-md bg-white shadow-lg rounded-xl p-8 space-y-6">
-      
+    <div
+      class="w-full h-full max-w-md bg-white shadow-lg rounded-xl p-8 space-y-6"
+    >
       <div class="flex justify-center">
         <img src="/logo.svg" alt="TravelIA Logo" class="w-20 h-20" />
       </div>
@@ -57,7 +58,7 @@ import Layout from "../layouts/BaseLayout.astro";
       <p class="text-center text-ocean-700">
         ¿No tenés una cuenta?
         <a
-          href="/register/index.html" 
+          href="/register/index.html"
           class="text-ocean-600 font-medium hover:underline"
         >
           Registrate!
@@ -72,9 +73,7 @@ import Layout from "../layouts/BaseLayout.astro";
   import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
   import { initializeApp } from "firebase/app";
   import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-  import { login, firebaseLogin } from "../services/api/authAPI"; 
-
-  const isNative = Capacitor.isNativePlatform();
+  import { login, firebaseLogin } from "../services/api/authAPI";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBtmT9xPjwStMiL5f6-T-HTfCIKIW65Nl0",
@@ -87,45 +86,43 @@ import Layout from "../layouts/BaseLayout.astro";
   const auth = getAuth(app);
   const provider = new GoogleAuthProvider();
 
-  if (!isNative) {
-      GoogleAuth.initialize({
-          clientId: "360414482088-rtp2h0ao33g08ovo4fa2q6rk0c2n1aos.apps.googleusercontent.com",
-          scopes: ["profile", "email"],
-          grantOfflineAccess: true
-      });
-  }
+  const isNative = Capacitor.isNativePlatform();
+
+  GoogleAuth.initialize({
+    clientId:
+      "360414482088-rtp2h0ao33g08ovo4fa2q6rk0c2n1aos.apps.googleusercontent.com",
+    scopes: ["profile", "email"],
+    grantOfflineAccess: true,
+  });
 
   const googleBtn = document.getElementById("googleLoginBtn");
 
   if (googleBtn) {
     googleBtn.addEventListener("click", async () => {
-      console.log("Iniciando proceso de Google Login...");
-      
+      console.log("Click en Google Login");
       try {
         let idToken;
 
         if (isNative) {
-          // --- ANDROID / NATIVO ---
-          console.log("Detectado entorno Nativo. Usando Capacitor GoogleAuth.");
+          // ANDROID
+          console.log("Entorno Nativo: Ejecutando GoogleAuth.signIn()");
           const user = await GoogleAuth.signIn();
           idToken = user.authentication.idToken;
-          console.log("Token nativo obtenido con éxito.");
+          console.log("Token obtenido en Android:", idToken);
         } else {
-          // --- WEB ---
-          console.log("Detectado entorno Web. Usando Firebase Popup.");
+          // WEB
+          console.log("Entorno Web: Ejecutando Firebase Popup");
           const result = await signInWithPopup(auth, provider);
           idToken = await result.user.getIdToken();
         }
 
-        console.log("Enviando token al backend...");
+        // Backend
         const data = await firebaseLogin(idToken);
-        
         document.cookie = `authToken=${data.access}; path=/; secure; samesite=strict`;
         window.location.href = "/dashboard/dashboard/index.html";
-
-      } catch (error: any) {
-        console.error("Error en Login Google:", error);
-        alert("Error al iniciar sesión: " + (error.message || JSON.stringify(error)));
+      } catch (e: any) {
+        console.error("Error Login:", e);
+        alert("Error: " + (e.message || JSON.stringify(e)));
       }
     });
   }
@@ -134,17 +131,29 @@ import Layout from "../layouts/BaseLayout.astro";
   if (form) {
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const usernameInput = document.getElementById("username") as HTMLInputElement;
-      const passwordInput = document.getElementById("password") as HTMLInputElement;
+      const usernameInput = document.getElementById(
+        "username"
+      ) as HTMLInputElement;
+      const passwordInput = document.getElementById(
+        "password"
+      ) as HTMLInputElement;
 
-      if(usernameInput && passwordInput) {
-          try {
-            const data = await login(usernameInput.value, passwordInput.value);
-            document.cookie = `authToken=${data.token}; path=/; secure; samesite=strict`;
-            window.location.href = "/dashboard/dashboard/index.html"; 
-          } catch (error: any) {
-            alert("Error: " + error.message);
+      if (usernameInput && passwordInput) {
+        try {
+          const data = await login(usernameInput.value, passwordInput.value);
+          const responseData = data as any;
+          const token = responseData.access || responseData.token;
+
+          if (!token) {
+            throw new Error("No se recibió un token válido del servidor");
           }
+
+          document.cookie = `authToken=${token}; path=/; secure; samesite=strict`;
+          window.location.href = "/dashboard/dashboard/index.html";
+        } catch (error: any) {
+          console.error(error);
+          alert("Error: " + error.message);
+        }
       }
     });
   }
