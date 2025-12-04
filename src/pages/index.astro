@@ -1,17 +1,36 @@
 ---
-//export const prerender = false;
-import Layout from "../layouts/BaseLayout.astro";
-
-const cookies = Astro.request.headers.get("cookie") || "";
-const hasToken = cookies.includes("authToken=");
-
-if (hasToken) {
-  //return Astro.redirect("/dashboard");
-  return Astro.redirect("/dashboard/dashboard/index.html");
-} else {
-  //return Astro.redirect("/login");
-  return Astro.redirect("/login/index.html");
-}
+import "../styles/global.css";
 ---
 
-<Layout></Layout>
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cargando TravelIA...</title>
+  </head>
+  <body
+    class="h-screen w-full flex flex-col justify-center items-center bg-ocean-50"
+  >
+    <img src="/logo.svg" alt="Cargando..." class="w-24 h-24 animate-pulse" />
+
+    <script>
+      function getCookie(name: string) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop()?.split(";").shift() || null;
+        return null;
+      }
+
+      setTimeout(() => {
+        const token = getCookie("authToken");
+
+        if (token) {
+          window.location.href = "/dashboard/dashboard/index.html";
+        } else {
+          window.location.href = "/login/index.html";
+        }
+      }, 100);
+    </script>
+  </body>
+</html>

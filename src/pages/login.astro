@@ -71,20 +71,9 @@ import Layout from "../layouts/BaseLayout.astro";
 <script>
   import { Capacitor } from "@capacitor/core";
   import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
-  import { initializeApp } from "firebase/app";
-  import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
   import { login, firebaseLogin } from "../services/api/authAPI";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyBtmT9xPjwStMiL5f6-T-HTfCIKIW65Nl0",
-    authDomain: "travelia-81216.firebaseapp.com",
-    projectId: "travelia-81216",
-    appId: "1:360414482088:web:d8741625365a300241fc9d",
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const provider = new GoogleAuthProvider();
+  import { auth, provider } from "../services/firebase";
+  import { signInWithPopup } from "firebase/auth";
 
   const isNative = Capacitor.isNativePlatform();
 
