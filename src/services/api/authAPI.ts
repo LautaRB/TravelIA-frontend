@@ -2,11 +2,14 @@ const BASE_URL = import.meta.env.PUBLIC_API_BASE_URL;
 
 export async function login(username: string, password: string) {
   try {
-    const res = await fetch(`${import.meta.env.PUBLIC_API_BASE_URL}/users/login/`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
+    const res = await fetch(
+      `${import.meta.env.PUBLIC_API_BASE_URL}/users/login/`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      }
+    );
 
     const data = await res.json();
 
@@ -23,7 +26,7 @@ export async function login(username: string, password: string) {
 export async function firebaseLogin(idToken: string) {
   try {
     console.log("Enviando token a:", `${BASE_URL}/users/firebase-login/`); // Log para depurar
-    
+
     const res = await fetch(`${BASE_URL}/users/firebase-login/`, {
       method: "POST",
       headers: {
@@ -35,9 +38,9 @@ export async function firebaseLogin(idToken: string) {
     const text = await res.text();
     let data;
     try {
-        data = JSON.parse(text);
+      data = JSON.parse(text);
     } catch {
-        data = { error: text };
+      data = { error: text };
     }
 
     if (!res.ok) {
@@ -49,5 +52,30 @@ export async function firebaseLogin(idToken: string) {
   } catch (error: any) {
     console.error("Error en fetch:", error);
     throw new Error(error.message || "Error de conexión");
+  }
+}
+
+export async function logout(authToken: string, refreshToken: string) {
+  try {
+    const res = await fetch(`${BASE_URL}/users/logout/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+      body: JSON.stringify({ refresh: refreshToken }),
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.warn("Logout en backend falló:", errorText);
+    } else {
+      console.log("Logout exitoso en backend");
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error de conexión al cerrar sesión:", error);
+    return false;
   }
 }

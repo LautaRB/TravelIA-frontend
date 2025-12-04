@@ -1,18 +1,87 @@
 ---
-//export const prerender = false;
 import Layout from "../../layouts/BaseLayout.astro";
 ---
 
-<Layout>
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Dashboard</title>
-    </head>
-    <body>
-        Hola
-    </body>
-    </html>
+<Layout title="Dashboard - TravelIA">
+  <div class="min-h-screen bg-gray-50 p-6">
+    <header class="flex justify-between items-center mb-8">
+      <h1 class="text-2xl font-bold text-gray-800">Mi Panel</h1>
+
+      <button
+        id="logoutBtn"
+        class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm"
+      >
+        Cerrar Sesión
+      </button>
+    </header>
+
+    <main class="bg-white rounded-xl shadow p-6">
+      <h2 class="text-xl font-semibold mb-4">Bienvenido a TravelIA</h2>
+      <p class="text-gray-600">
+        ¡Hola! Ya estás dentro del sistema. Aquí podrás gestionar tus viajes.
+      </p>
+      <div
+        class="mt-4 p-4 bg-blue-50 text-blue-700 rounded-lg border border-blue-100"
+      >
+        Estado: <strong>Conectado</strong>
+      </div>
+    </main>
+  </div>
 </Layout>
+
+<script>
+  import { Capacitor } from "@capacitor/core";
+  import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
+  import { logout } from "../../services/api/authAPI";
+
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  function getCookie(name: string): string | null {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+
+    if (parts.length === 2) {
+      return parts.pop()?.split(";").shift() || null;
+    }
+    return null;
+  }
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+      logoutBtn.innerText = "Cerrando...";
+      (logoutBtn as HTMLButtonElement).disabled = true;
+      logoutBtn.classList.add("opacity-75", "cursor-not-allowed");
+
+      const accessToken = getCookie("authToken");
+      const refreshToken = getCookie("refreshToken");
+
+      if (accessToken && refreshToken) {
+        console.log("Enviando refresh token a la lista negra...");
+        await logout(accessToken, refreshToken);
+      }
+
+      if (Capacitor.isNativePlatform()) {
+        try {
+          GoogleAuth.initialize({
+            clientId:
+              "360414482088-rtp2h0ao33g08ovo4fa2q6rk0c2n1aos.apps.googleusercontent.com",
+            scopes: ["profile", "email"],
+            grantOfflineAccess: true,
+          });
+          await GoogleAuth.signOut();
+          console.log("Sesión nativa de Google cerrada.");
+        } catch (e) {
+          console.error("Error al cerrar sesión nativa (no crítico):", e);
+        }
+      }
+
+      document.cookie =
+        "authToken=; path=/; max-age=0; secure; samesite=strict";
+      document.cookie =
+        "refreshToken=; path=/; max-age=0; secure; samesite=strict";
+
+      console.log("Redirigiendo al login...");
+      window.location.href = "/login/index.html";
+    });
+  }
+</script>

@@ -33,6 +33,7 @@ import Layout from "../layouts/BaseLayout.astro";
         />
 
         <button
+          id="submitBtnLogin"
           type="submit"
           class="w-full bg-ocean-500 hover:bg-ocean-600 text-white py-2 rounded-lg font-medium transition"
         >
@@ -71,9 +72,9 @@ import Layout from "../layouts/BaseLayout.astro";
 <script>
   import { Capacitor } from "@capacitor/core";
   import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
-  import { login, firebaseLogin } from "../services/api/authAPI";
   import { auth, provider } from "../services/firebase";
   import { signInWithPopup } from "firebase/auth";
+  import { login, firebaseLogin } from "../services/api/authAPI";
 
   const isNative = Capacitor.isNativePlatform();
 
@@ -84,42 +85,79 @@ import Layout from "../layouts/BaseLayout.astro";
     grantOfflineAccess: true,
   });
 
+  function setLoadingState(buttonId: string, isLoading: boolean) {
+    const button = document.getElementById(buttonId) as HTMLButtonElement;
+    if (!button) return;
+
+    if (isLoading) {
+      button.dataset.originalContent = button.innerHTML;
+      button.disabled = true;
+      button.classList.add("opacity-75", "cursor-not-allowed");
+
+      button.innerHTML = `
+        <div class="flex items-center justify-center gap-2">
+          <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span>Iniciando sesión...</span>
+        </div>
+      `;
+    } else {
+      button.disabled = false;
+      button.classList.remove("opacity-75", "cursor-not-allowed");
+      if (button.dataset.originalContent) {
+        button.innerHTML = button.dataset.originalContent;
+      }
+    }
+  }
+
   const googleBtn = document.getElementById("googleLoginBtn");
 
   if (googleBtn) {
     googleBtn.addEventListener("click", async () => {
-      console.log("Click en Google Login");
+      setLoadingState("googleLoginBtn", true);
+
       try {
         let idToken;
 
         if (isNative) {
-          // ANDROID
-          console.log("Entorno Nativo: Ejecutando GoogleAuth.signIn()");
           const user = await GoogleAuth.signIn();
           idToken = user.authentication.idToken;
-          console.log("Token obtenido en Android:", idToken);
         } else {
-          // WEB
-          console.log("Entorno Web: Ejecutando Firebase Popup");
           const result = await signInWithPopup(auth, provider);
           idToken = await result.user.getIdToken();
         }
 
-        // Backend
         const data = await firebaseLogin(idToken);
-        document.cookie = `authToken=${data.access}; path=/; secure; samesite=strict`;
+        const responseData = data as any;
+        const accessToken = responseData.access || responseData.token;
+        const refreshToken = responseData.refresh;
+
+        if (!accessToken) throw new Error("No se recibió token de acceso");
+
+        document.cookie = `authToken=${accessToken}; path=/; secure; samesite=strict; max-age=2592000`;
+
+        if (refreshToken) {
+          document.cookie = `refreshToken=${refreshToken}; path=/; secure; samesite=strict; max-age=2592000`;
+        }
+
         window.location.href = "/dashboard/dashboard/index.html";
       } catch (e: any) {
         console.error("Error Login:", e);
         alert("Error: " + (e.message || JSON.stringify(e)));
+
+        setLoadingState("googleLoginBtn", false);
       }
     });
   }
 
   const form = document.getElementById("loginForm");
+
   if (form) {
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
+
       const usernameInput = document.getElementById(
         "username"
       ) as HTMLInputElement;
@@ -127,21 +165,31 @@ import Layout from "../layouts/BaseLayout.astro";
         "password"
       ) as HTMLInputElement;
 
-      if (usernameInput && passwordInput) {
+      const submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn && !submitBtn.id) submitBtn.id = "submitBtnLogin";
+
+      if (usernameInput && passwordInput && submitBtn) {
+        setLoadingState(submitBtn.id, true);
+
         try {
           const data = await login(usernameInput.value, passwordInput.value);
-          const responseData = data as any;
-          const token = responseData.access || responseData.token;
 
-          if (!token) {
-            throw new Error("No se recibió un token válido del servidor");
+          const responseData = data as any;
+          const accessToken = responseData.access || responseData.token;
+          const refreshToken = responseData.refresh;
+
+          if (!accessToken) throw new Error("No se recibió token de acceso");
+
+          document.cookie = `authToken=${accessToken}; path=/; secure; samesite=strict; max-age=2592000`;
+
+          if (refreshToken) {
+            document.cookie = `refreshToken=${refreshToken}; path=/; secure; samesite=strict; max-age=2592000`;
           }
 
-          document.cookie = `authToken=${token}; path=/; secure; samesite=strict`;
           window.location.href = "/dashboard/dashboard/index.html";
         } catch (error: any) {
-          console.error(error);
           alert("Error: " + error.message);
+          setLoadingState(submitBtn.id, false);
         }
       }
     });
