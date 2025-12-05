@@ -1,79 +1,210 @@
 ---
-//export const prerender = false;
 import Layout from "../layouts/BaseLayout.astro";
 ---
 
-<Layout>
-  <html lang="es">
-    <body class="min-h-screen flex items-center justify-center bg-ocean-50 p-4">
-      <div
-        class="w-full h-full max-w-md bg-white shadow-lg rounded-xl p-8 space-y-6"
-      >
-        <!-- Logo -->
-        <div class="flex justify-center">
-          <img src="/logo.svg" alt="TravelIA Logo" class="w-20 h-20" />
-        </div>
-
-        <!-- Título -->
-        <h1 class="text-2xl font-semibold text-center text-ocean-800">
-          Registrate en TravelIA
-        </h1>
-
-        <!-- Formulario -->
-        <form class="space-y-4">
-          <input
-            type="text"
-            placeholder="Usuario"
-            class="w-full px-4 py-2 border border-ocean-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ocean-500"
-          />
-
-          <input
-            type="email"
-            placeholder="Mail"
-            class="w-full px-4 py-2 border border-ocean-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ocean-500"
-          />
-
-          <input
-            type="password"
-            placeholder="Contraseña"
-            class="w-full px-4 py-2 border border-ocean-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ocean-500"
-          />
-
-          <button
-            type="submit"
-            class="w-full bg-ocean-500 hover:bg-ocean-600 text-white py-2 rounded-lg font-medium transition"
-          >
-            Registrarse
-          </button>
-        </form>
-
-        <!-- Separador -->
-        <div class="flex items-center justify-center gap-4 text-ocean-400">
-          <span class="flex-1 h-px bg-ocean-200"></span>
-          O
-          <span class="flex-1 h-px bg-ocean-200"></span>
-        </div>
-
-        <!-- Botón Google -->
-        <button
-          class="w-full flex items-center justify-center gap-3 border border-ocean-300 py-2 rounded-lg hover:bg-ocean-100 transition"
-        >
-          <img src="/google-icon.svg" alt="Google" class="w-5 h-5" />
-          Registrate con Google
-        </button>
-
-        <!-- Inicio de Sesión -->
-        <p class="text-center text-ocean-700">
-          ¿Ya tenés una cuenta?
-          {/* href="/login" */}
-          <a  
-            href="/login/index.html"
-            class="text-ocean-600 font-medium hover:underline"
-          >
-            Inicia sesión!
-          </a>
-        </p>
+<Layout title="Registrarse - TravelIA">
+  <div class="min-h-screen flex items-center justify-center bg-ocean-50 p-4">
+    <div
+      class="w-full h-full max-w-md bg-white shadow-lg rounded-xl p-8 space-y-6"
+    >
+      <div class="flex justify-center">
+        <img src="/logo.svg" alt="TravelIA Logo" class="w-20 h-20" />
       </div>
-    </body>
-  </html>
+
+      <h1 class="text-2xl font-semibold text-center text-ocean-800">
+        Registrate en TravelIA
+      </h1>
+
+      <form id="registerForm" class="space-y-4">
+        <input
+          id="reg_username"
+          type="text"
+          placeholder="Usuario"
+          class="w-full px-4 py-2 border border-ocean-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ocean-500"
+          required
+        />
+
+        <input
+          id="reg_email"
+          type="email"
+          placeholder="Mail"
+          class="w-full px-4 py-2 border border-ocean-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ocean-500"
+          required
+        />
+
+        <input
+          id="reg_password"
+          type="password"
+          placeholder="Contraseña"
+          class="w-full px-4 py-2 border border-ocean-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ocean-500"
+          required
+        />
+
+        <button
+          id="submitBtnRegister"
+          type="submit"
+          class="w-full bg-ocean-500 hover:bg-ocean-600 text-white py-2 rounded-lg font-medium transition"
+        >
+          Registrarse
+        </button>
+      </form>
+
+      <div class="flex items-center justify-center gap-4 text-ocean-400">
+        <span class="flex-1 h-px bg-ocean-200"></span>
+        O
+        <span class="flex-1 h-px bg-ocean-200"></span>
+      </div>
+
+      <button
+        id="googleRegisterBtn"
+        type="button"
+        class="w-full flex items-center justify-center gap-3 border border-ocean-300 py-2 rounded-lg hover:bg-ocean-100 transition"
+      >
+        <img src="/google-icon.svg" alt="Google" class="w-5 h-5" />
+        Registrate con Google
+      </button>
+
+      <p class="text-center text-ocean-700">
+        ¿Ya tenés una cuenta?
+        <a
+          href="/login/index.html"
+          class="text-ocean-600 font-medium hover:underline"
+        >
+          Inicia sesión!
+        </a>
+      </p>
+    </div>
+  </div>
 </Layout>
+
+<script>
+  import { Capacitor } from "@capacitor/core";
+  import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
+  import { auth, provider } from "../services/firebase";
+  import { signInWithPopup } from "firebase/auth";
+  import { register, firebaseLogin } from "../services/api/authAPI";
+
+  const isNative = Capacitor.isNativePlatform();
+
+  GoogleAuth.initialize({
+    clientId:
+      "360414482088-rtp2h0ao33g08ovo4fa2q6rk0c2n1aos.apps.googleusercontent.com",
+    scopes: ["profile", "email"],
+    grantOfflineAccess: true,
+  });
+
+  function setLoadingState(
+    buttonId: string,
+    isLoading: boolean,
+    text = "Procesando..."
+  ) {
+    const button = document.getElementById(buttonId) as HTMLButtonElement;
+    if (!button) return;
+
+    if (isLoading) {
+      button.dataset.originalContent = button.innerHTML;
+      button.disabled = true;
+      button.classList.add("opacity-75", "cursor-not-allowed");
+      button.innerHTML = `
+        <div class="flex items-center justify-center gap-2">
+          <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span>${text}</span>
+        </div>
+      `;
+    } else {
+      button.disabled = false;
+      button.classList.remove("opacity-75", "cursor-not-allowed");
+      if (button.dataset.originalContent) {
+        button.innerHTML = button.dataset.originalContent;
+      }
+    }
+  }
+
+  const googleBtn = document.getElementById("googleRegisterBtn");
+
+  if (googleBtn) {
+    googleBtn.addEventListener("click", async () => {
+      setLoadingState("googleRegisterBtn", true);
+
+      try {
+        let idToken;
+        if (isNative) {
+          const user = await GoogleAuth.signIn();
+          idToken = user.authentication.idToken;
+        } else {
+          const result = await signInWithPopup(auth, provider);
+          idToken = await result.user.getIdToken();
+        }
+
+        const data = await firebaseLogin(idToken);
+
+        if (data.created === false) {
+          alert(
+            "Ya existe una cuenta con este Google. Por favor, inicia sesión."
+          );
+
+          if (isNative) {
+            await GoogleAuth.signOut();
+          }
+
+          window.location.href = "/login/index.html";
+          return;
+        }
+
+        const responseData = data as any;
+        const token = responseData.access || responseData.token;
+        const refreshToken = responseData.refresh;
+
+        document.cookie = `authToken=${token}; path=/; secure; samesite=strict; max-age=2592000`;
+        if (refreshToken) {
+          document.cookie = `refreshToken=${refreshToken}; path=/; secure; samesite=strict; max-age=2592000`;
+        }
+
+        window.location.href = "/dashboard/dashboard/index.html";
+      } catch (e: any) {
+        console.error(e);
+        alert("Error: " + (e.message || JSON.stringify(e)));
+        setLoadingState("googleRegisterBtn", false);
+      }
+    });
+  }
+
+  const form = document.getElementById("registerForm");
+
+  if (form) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const usernameInput = document.getElementById(
+        "reg_username"
+      ) as HTMLInputElement;
+      const emailInput = document.getElementById(
+        "reg_email"
+      ) as HTMLInputElement;
+      const passwordInput = document.getElementById(
+        "reg_password"
+      ) as HTMLInputElement;
+
+      if (usernameInput && emailInput && passwordInput) {
+        setLoadingState("submitBtnRegister", true, "Registrando...");
+
+        try {
+          await register(
+            usernameInput.value,
+            emailInput.value,
+            passwordInput.value
+          );
+
+          alert("¡Registro exitoso! Ahora inicia sesión.");
+          window.location.href = "/login/index.html";
+        } catch (error: any) {
+          alert("Error: " + error.message);
+          setLoadingState("submitBtnRegister", false);
+        }
+      }
+    });
+  }
+</script>
