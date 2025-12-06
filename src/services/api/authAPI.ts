@@ -127,3 +127,28 @@ export async function logout(authToken: string, refreshToken: string) {
     return false;
   }
 }
+
+export async function getProfile(authToken: string) {
+  try {
+    const res = await fetch(`${BASE_URL}/users/me/profile/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${authToken}`
+      }
+    });
+
+    const textData = await res.text();
+    let data;
+    try { data = JSON.parse(textData); } catch { throw new Error("Error de servidor"); }
+
+    if (!res.ok) {
+      throw new Error(getBackendErrorMessage(data));
+    }
+
+    return data.details; 
+  } catch (error: any) {
+    console.error("Error fetching profile:", error);
+    throw new Error(error.message || "No se pudo cargar el perfil");
+  }
+}

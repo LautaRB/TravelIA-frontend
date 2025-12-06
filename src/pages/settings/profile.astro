@@ -20,7 +20,8 @@ import Layout from "../../layouts/BaseLayout.astro";
         <div class="relative mb-4">
           <div class="w-24 h-24 rounded-full bg-ocean-100 border-4 border-white shadow-md overflow-hidden">
             <img 
-              src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" 
+              id="profile-image"
+              src="https://api.dicebear.com/7.x/avataaars/svg?seed=Loading" 
               alt="Avatar" 
               class="w-full h-full object-cover"
             />
@@ -33,8 +34,8 @@ import Layout from "../../layouts/BaseLayout.astro";
           </button>
         </div>
         
-        <h2 id="profile-name" class="text-xl font-bold text-ocean-900">Viajero TravelIA</h2>
-        <p id="profile-email" class="text-sm text-ocean-400">usuario@ejemplo.com</p>
+        <h2 id="profile-name" class="text-xl font-bold text-ocean-900">Cargando...</h2>
+        <p id="profile-email" class="text-sm text-ocean-400">...</p>
       </section>
 
       <section class="space-y-3">
@@ -89,7 +90,7 @@ import Layout from "../../layouts/BaseLayout.astro";
 <script>
   import { Capacitor } from "@capacitor/core";
   import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
-  import { logout } from "../../services/api/authAPI"; // Asegura la ruta correcta
+  import { logout, getProfile } from "../../services/api/authAPI";
 
   function getCookie(name: string): string | null {
       const value = `; ${document.cookie}`;
@@ -97,6 +98,35 @@ import Layout from "../../layouts/BaseLayout.astro";
       if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
       return null;
   }
+
+  async function loadProfileData() {
+      const token = getCookie('authToken');
+
+      if (!token) return;
+
+      try {
+          const user = await getProfile(token);
+
+          const nameEl = document.getElementById('profile-name');
+          const emailEl = document.getElementById('profile-email');
+          const imgEl = document.getElementById('profile-image') as HTMLImageElement;
+
+          if (nameEl && user.username) {
+              nameEl.innerText = user.username.charAt(0).toUpperCase() + user.username.slice(1);
+          }
+          if (emailEl && user.email) {
+              emailEl.innerText = user.email;
+          }
+          if (imgEl && user.profile_picture) {
+              imgEl.src = user.profile_picture;
+          }
+
+      } catch (e) {
+          console.error("Error al cargar perfil:", e);
+      }
+  }
+
+  loadProfileData();
 
   const logoutBtn = document.getElementById("logoutBtn");
 
