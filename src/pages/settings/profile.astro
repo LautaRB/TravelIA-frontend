@@ -38,13 +38,12 @@ import Layout from "../../layouts/BaseLayout.astro";
       >
         <div class="relative mb-4">
           <div
-            class="w-24 h-24 rounded-full bg-ocean-100 dark:bg-slate-700 border-4 border-white dark:border-slate-600 shadow-md overflow-hidden"
+            class="w-24 h-24 rounded-full bg-ocean-100 dark:bg-slate-700 border-4 border-white dark:border-slate-600 shadow-md overflow-hidden relative"
           >
             <img
               id="profile-image"
-              src="https://api.dicebear.com/7.x/avataaars/svg?seed=Loading"
               alt="Avatar"
-              class="w-full h-full object-cover"
+              class="w-full h-full object-cover opacity-0 transition-opacity duration-500"
             />
           </div>
           <button
@@ -56,31 +55,25 @@ import Layout from "../../layouts/BaseLayout.astro";
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              ><path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+              ></path></svg
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-              ></path>
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
-            </svg>
           </button>
         </div>
 
         <h2
           id="profile-name"
-          class="text-xl font-bold text-ocean-900 dark:text-white"
+          class="text-xl font-bold text-ocean-900 dark:text-white animate-pulse"
         >
           Cargando...
         </h2>
         <p
           id="profile-email"
-          class="text-sm text-ocean-400 dark:text-slate-400"
+          class="text-sm text-ocean-400 dark:text-slate-400 animate-pulse"
         >
           ...
         </p>
@@ -181,48 +174,56 @@ import Layout from "../../layouts/BaseLayout.astro";
 
   <script>
     import { Capacitor } from "@capacitor/core";
-
     import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
-
     import { logout, getProfile } from "../../services/api/authAPI";
 
     function getCookie(name: string): string | null {
       const value = `; ${document.cookie}`;
-
       const parts = value.split(`; ${name}=`);
-
       if (parts.length === 2) return parts.pop()?.split(";").shift() || null;
-
       return null;
     }
 
     async function loadProfileData() {
       const token = getCookie("authToken");
-
       if (!token) return;
 
       try {
         const user = await getProfile(token);
 
         const nameEl = document.getElementById("profile-name");
-
         const emailEl = document.getElementById("profile-email");
-
         const imgEl = document.getElementById(
           "profile-image"
         ) as HTMLImageElement;
 
         if (nameEl && user.username) {
-          nameEl.innerText =
-            user.username.charAt(0).toUpperCase() + user.username.slice(1);
+          nameEl.innerText = user.username;
+          nameEl.classList.remove("animate-pulse");
         }
-
         if (emailEl && user.email) {
           emailEl.innerText = user.email;
+          emailEl.classList.remove("animate-pulse");
         }
 
-        if (imgEl && user.profile_picture) {
-          imgEl.src = user.profile_picture;
+        if (imgEl) {
+          const fallbackUrl = "/default-penguin.png";
+
+          imgEl.onload = () => {
+            imgEl.classList.remove("opacity-0");
+          };
+
+          imgEl.onerror = () => {
+            if (imgEl.src !== window.location.origin + fallbackUrl) {
+              imgEl.src = fallbackUrl;
+            }
+          };
+
+          if (user.profile_picture) {
+            imgEl.src = user.profile_picture;
+          } else {
+            imgEl.src = fallbackUrl;
+          }
         }
       } catch (e) {
         console.error("Error al cargar perfil:", e);

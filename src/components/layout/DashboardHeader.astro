@@ -1,22 +1,20 @@
 ---
-// src/components/layout/DashboardHeader.astro
 ---
 <header class="bg-white dark:bg-slate-800 px-6 pt-12 pb-4 shadow-sm rounded-b-3xl sticky top-0 z-10 transition-colors duration-300">
   <div class="flex justify-between items-center">
     <div>
       <h1 class="text-2xl font-bold text-ocean-900 dark:text-white">
-        Hola, <span id="header-user-name" class="text-ocean-600 dark:text-ocean-400">...</span>! 👋
+        Hola, <span id="header-user-name" class="text-ocean-600 dark:text-ocean-400 animate-pulse">Cargando...</span>! 👋
       </h1>
       <p class="text-sm text-ocean-400 dark:text-slate-400 mt-1">¿Listo para tu próxima aventura?</p>
     </div>
     
     <a href="/settings/profile/index.html" class="relative group">
-      <div class="w-12 h-12 rounded-full bg-ocean-100 dark:bg-slate-700 border-2 border-ocean-200 dark:border-slate-600 overflow-hidden shadow-sm group-hover:border-ocean-400 transition-colors">
+      <div class="w-12 h-12 rounded-full bg-ocean-100 dark:bg-slate-700 border-2 border-ocean-200 dark:border-slate-600 overflow-hidden shadow-sm group-hover:border-ocean-400 transition-colors relative">
         <img 
           id="header-user-avatar"
-          src="https://api.dicebear.com/7.x/avataaars/svg?seed=Loading" 
           alt="Perfil" 
-          class="w-full h-full object-cover"
+          class="w-full h-full object-cover opacity-0 transition-opacity duration-500"
         />
       </div>
     </a>
@@ -43,15 +41,36 @@
       const nameEl = document.getElementById('header-user-name');
       if (nameEl && user.username) {
         nameEl.innerText = user.username.charAt(0).toUpperCase() + user.username.slice(1);
+        nameEl.classList.remove('animate-pulse');
       }
 
       const imgEl = document.getElementById('header-user-avatar') as HTMLImageElement;
-      if (imgEl && user.profile_picture) {
-        imgEl.src = user.profile_picture;
+      if (imgEl) {
+        const fallbackUrl = "/default-penguin.png";
+
+        imgEl.onload = () => {
+            imgEl.classList.remove('opacity-0');
+        };
+
+        imgEl.onerror = () => {
+            if (imgEl.src !== window.location.origin + fallbackUrl) {
+                 imgEl.src = fallbackUrl;
+            }
+        };
+
+        if (user.profile_picture) {
+            imgEl.src = user.profile_picture;
+        } else {
+            imgEl.src = fallbackUrl;
+        }
       }
 
     } catch (error) {
       console.error("Error cargando header:", error);
+       const nameEl = document.getElementById('header-user-name');
+       if(nameEl) { nameEl.innerText = "Viajero"; nameEl.classList.remove('animate-pulse'); }
+       const imgEl = document.getElementById('header-user-avatar') as HTMLImageElement;
+       if(imgEl) { imgEl.src = "/default-penguin.png"; imgEl.classList.remove('opacity-0'); }
     }
   }
 
