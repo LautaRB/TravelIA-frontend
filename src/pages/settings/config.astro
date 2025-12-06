@@ -83,7 +83,7 @@ import Layout from "../../layouts/BaseLayout.astro";
         <h2 class="text-xs font-bold text-ocean-400 dark:text-slate-400 uppercase tracking-wider ml-2 mb-2">Seguridad</h2>
         <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm overflow-hidden divide-y divide-gray-100 dark:divide-slate-700 transition-colors">
           
-          <button id="change-pass-btn" class="w-full p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-slate-700 transition text-left">
+          <a href="/settings/change-password/index.html" class="w-full p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-slate-700 transition text-left cursor-pointer">
             <div class="flex items-center gap-3">
               <div class="bg-ocean-50 dark:bg-slate-700 p-2 rounded-lg text-ocean-600 dark:text-ocean-400">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -95,7 +95,7 @@ import Layout from "../../layouts/BaseLayout.astro";
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
-          </button>
+          </a>
 
         </div>
       </section>
@@ -137,13 +137,6 @@ import Layout from "../../layouts/BaseLayout.astro";
       } else {
         document.documentElement.classList.remove('dark');
       }
-    });
-  }
-
-  const changePassBtn = document.getElementById('change-pass-btn');
-  if(changePassBtn) {
-    changePassBtn.addEventListener('click', () => {
-        alert("Próximamente: Formulario de cambio de contraseña.");
     });
   }
 </script>

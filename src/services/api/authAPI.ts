@@ -152,3 +152,29 @@ export async function getProfile(authToken: string) {
     throw new Error(error.message || "No se pudo cargar el perfil");
   }
 }
+
+export async function updateProfile(authToken: string, updateData: object) {
+  try {
+    const res = await fetch(`${BASE_URL}/users/me/profile/`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${authToken}`
+      },
+      body: JSON.stringify(updateData),
+    });
+
+    const textData = await res.text();
+    let data;
+    try { data = JSON.parse(textData); } catch { throw new Error("Error del servidor"); }
+
+    if (!res.ok) {
+      throw new Error(getBackendErrorMessage(data));
+    }
+
+    return data;
+  } catch (error: any) {
+    console.error("Error updating profile:", error);
+    throw new Error(error.message || "No se pudo actualizar el perfil");
+  }
+}
