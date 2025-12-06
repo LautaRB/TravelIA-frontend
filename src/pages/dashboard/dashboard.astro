@@ -6,54 +6,47 @@ import HeroAction from "../../components/ui/HeroAction.astro";
 ---
 
 <Layout title="Dashboard - TravelIA">
-  <div class="min-h-screen bg-ocean-50 pb-24 relative">
-    
+  <div class="min-h-screen bg-ocean-50 dark:bg-slate-900 pb-24 relative transition-colors duration-300">
     <DashboardHeader />
 
     <main class="px-6 mt-6 space-y-8">
-      
       <section>
-        <HeroAction 
-          title="Planear con IA ✨" 
+        <HeroAction
+          title="Planear con IA ✨"
           subtitle="Diseña tu itinerario perfecto en segundos."
-          onClickId="createTripBtn" 
+          onClickId="createTripBtn"
         />
       </section>
 
       <section>
         <div class="flex justify-between items-end mb-4">
-          <h3 class="text-lg font-bold text-ocean-900">Tus Viajes</h3>
-          <a href="#" class="text-xs text-ocean-500 font-medium hover:text-ocean-700">Ver todos</a>
+          <h3 class="text-lg font-bold text-ocean-900 dark:text-white">Tus Viajes</h3>
+          <a
+            href="#"
+            class="text-xs text-ocean-500 dark:text-ocean-400 font-medium hover:text-ocean-700"
+            >Ver todos</a
+          >
         </div>
 
-        <div id="empty-state" class="flex flex-col items-center justify-center py-10 bg-white rounded-2xl border-2 border-dashed border-ocean-100">
-          <div class="bg-ocean-50 p-4 rounded-full mb-3">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-ocean-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div
+          id="empty-state"
+          class="flex flex-col items-center justify-center py-10 bg-white dark:bg-slate-800 rounded-2xl border-2 border-dashed border-ocean-100 dark:border-slate-700 transition-colors"
+        >
+          <div class="bg-ocean-50 dark:bg-slate-700 p-4 rounded-full mb-3">
+             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-ocean-300 dark:text-ocean-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
             </svg>
           </div>
-          <p class="text-ocean-800 font-medium">Aún no tienes viajes</p>
-          <p class="text-xs text-ocean-400 mt-1">¡Toca el botón de arriba para empezar!</p>
+          <p class="text-ocean-800 dark:text-white font-medium">
+            Aún no tienes viajes
+          </p>
+          <p class="text-xs text-ocean-400 dark:text-slate-400 mt-1">
+            ¡Toca el botón de arriba para empezar!
+          </p>
         </div>
-
       </section>
     </main>
 
     <BottomNav activePage="home" />
-
   </div>
 </Layout>
-
-<script>
-  function getCookie(name: string): string | null {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
-      return null;
-  }
-
-  const token = getCookie('authToken');
-  if (!token) {
-    window.location.href = "/login/index.html";
-  }
-</script>

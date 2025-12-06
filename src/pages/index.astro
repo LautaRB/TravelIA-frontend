@@ -8,10 +8,21 @@ import "../styles/global.css";
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cargando TravelIA...</title>
+
+    <script is:inline>
+      (function() {
+        const theme = localStorage.getItem('theme');
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (theme === 'dark' || (!theme && systemDark) || (theme === 'system' && systemDark)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      })();
+    </script>
   </head>
-  <body
-    class="h-screen w-full flex flex-col justify-center items-center bg-ocean-50"
-  >
+  
+  <body class="h-screen w-full flex flex-col justify-center items-center bg-ocean-50 dark:bg-slate-900 transition-colors duration-300">
     <img src="/logo.svg" alt="Cargando..." class="w-24 h-24 animate-pulse" />
 
     <script>
