@@ -86,13 +86,28 @@ import Layout from "../../layouts/BaseLayout.astro";
           Cuenta
         </h3>
 
-        <button
+        <a
+          href="/settings/modify-profile-data/index.html"
           class="w-full bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm flex items-center justify-between group active:scale-[0.98] transition-colors border border-transparent dark:border-slate-700"
         >
           <div class="flex items-center gap-4">
             <div
               class="bg-ocean-50 dark:bg-slate-700 p-2 rounded-lg text-ocean-600 dark:text-ocean-400"
             >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                ></path>
+              </svg>
             </div>
             <span class="text-ocean-800 dark:text-slate-200 font-medium"
               >Datos Personales</span
@@ -111,7 +126,7 @@ import Layout from "../../layouts/BaseLayout.astro";
               stroke-width="2"
               d="M9 5l7 7-7 7"></path>
           </svg>
-        </button>
+        </a>
 
         <a
           href="/settings/config/index.html"

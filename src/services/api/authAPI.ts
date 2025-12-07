@@ -153,15 +153,22 @@ export async function getProfile(authToken: string) {
   }
 }
 
-export async function updateProfile(authToken: string, updateData: object) {
+export async function updateProfile(authToken: string, updateData: any) {
   try {
+    const isFormData = updateData instanceof FormData;
+    
+    const headers: any = {
+      "Authorization": `Bearer ${authToken}`
+    };
+
+    if (!isFormData) {
+      headers["Content-Type"] = "application/json";
+    }
+
     const res = await fetch(`${BASE_URL}/users/me/profile/`, {
       method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${authToken}`
-      },
-      body: JSON.stringify(updateData),
+      headers: headers,
+      body: isFormData ? updateData : JSON.stringify(updateData),
     });
 
     const textData = await res.text();
