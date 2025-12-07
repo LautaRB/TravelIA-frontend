@@ -18,7 +18,6 @@ import Layout from "../../layouts/BaseLayout.astro";
 
       <section>
         <h2 class="text-xs font-bold text-ocean-400 dark:text-slate-400 uppercase tracking-wider ml-2 mb-2">Apariencia</h2>
-        
         <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm overflow-hidden transition-colors">
           
           <div class="p-4 flex items-center justify-between">
@@ -54,10 +53,10 @@ import Layout from "../../layouts/BaseLayout.astro";
               </div>
               <span class="text-ocean-900 dark:text-slate-200 font-medium">Moneda</span>
             </div>
-            <select class="bg-transparent text-ocean-500 dark:text-ocean-400 font-medium text-sm focus:outline-none text-right dark:bg-slate-800">
+            <select id="currency-selector" class="bg-transparent text-ocean-500 dark:text-ocean-400 font-medium text-sm focus:outline-none text-right dark:bg-slate-800 cursor-pointer">
               <option value="USD">USD ($)</option>
-              <option value="EUR">EUR (€)</option>
               <option value="ARS">ARS ($)</option>
+              <option value="EUR">EUR (€)</option>
             </select>
           </div>
 
@@ -70,9 +69,9 @@ import Layout from "../../layouts/BaseLayout.astro";
               </div>
               <span class="text-ocean-900 dark:text-slate-200 font-medium">Distancia</span>
             </div>
-            <select class="bg-transparent text-ocean-500 dark:text-ocean-400 font-medium text-sm focus:outline-none text-right dark:bg-slate-800">
-              <option value="km">Kilómetros</option>
-              <option value="mi">Millas</option>
+            <select id="distance-selector" class="bg-transparent text-ocean-500 dark:text-ocean-400 font-medium text-sm focus:outline-none text-right dark:bg-slate-800 cursor-pointer">
+              <option value="KM">Kilómetros</option>
+              <option value="MI">Millas</option>
             </select>
           </div>
 
@@ -117,8 +116,9 @@ import Layout from "../../layouts/BaseLayout.astro";
 </Layout>
 
 <script>
+  import { getProfile, updateProfile } from "../../services/api/authAPI";
+
   const themeSelector = document.getElementById('theme-selector') as HTMLSelectElement;
-  
   if (themeSelector) {
     const savedTheme = localStorage.getItem('theme') || 'system';
     themeSelector.value = savedTheme;
@@ -126,7 +126,6 @@ import Layout from "../../layouts/BaseLayout.astro";
     themeSelector.addEventListener('change', (e) => {
       const target = e.target as HTMLSelectElement;
       const newTheme = target.value;
-
       localStorage.setItem('theme', newTheme);
 
       if (
@@ -139,4 +138,57 @@ import Layout from "../../layouts/BaseLayout.astro";
       }
     });
   }
+  
+  function getCookie(name: string): string | null {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+      return null;
+  }
+
+  async function initBackendConfig() {
+      const token = getCookie('authToken');
+      if (!token) return;
+
+      const currencySel = document.getElementById('currency-selector') as HTMLSelectElement;
+      const distanceSel = document.getElementById('distance-selector') as HTMLSelectElement;
+
+      if (!currencySel || !distanceSel) return;
+
+      try {
+          const user = await getProfile(token);
+          currencySel.value = user.currency || 'ARS';
+          distanceSel.value = user.distance_unit || 'KM';
+
+          const handleUpdate = async (field: string, value: string) => {
+              try {
+                  const updateData = { [field]: value };
+                  
+                  await updateProfile(token, updateData);
+                  
+                  console.log(`Preferencia actualizada: ${field} -> ${value}`);
+                  
+              } catch (err) {
+                  console.error("Error guardando preferencia:", err);
+                  alert("No se pudo guardar la configuración. Revisa tu conexión.");
+              }
+          };
+
+          currencySel.addEventListener('change', (e) => {
+              const target = e.target as HTMLSelectElement;
+              handleUpdate('currency', target.value);
+          });
+
+          distanceSel.addEventListener('change', (e) => {
+              const target = e.target as HTMLSelectElement;
+              handleUpdate('distance_unit', target.value);
+          });
+
+      } catch (error) {
+          console.error("Error inicializando config:", error);
+      }
+  }
+
+  initBackendConfig();
+
 </script>
