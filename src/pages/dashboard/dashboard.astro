@@ -10,11 +10,12 @@ import HeroAction from "../../components/ui/HeroAction.astro";
     <DashboardHeader />
 
     <main class="px-6 mt-6 space-y-8">
+      
       <section>
         <HeroAction
           title="Planear con IA ✨"
           subtitle="Diseña tu itinerario perfecto en segundos."
-          onClickId="createTripBtn"
+          onClickId="createTripBtn" 
         />
       </section>
 
@@ -50,3 +51,13 @@ import HeroAction from "../../components/ui/HeroAction.astro";
     <BottomNav activePage="home" />
   </div>
 </Layout>
+
+<script>
+  const createTripBtn = document.getElementById('createTripBtn');
+
+  if (createTripBtn) {
+    createTripBtn.addEventListener('click', () => {
+      window.location.href = '/trips/plan/index.html';
+    });
+  }
+</script>
