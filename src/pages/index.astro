@@ -10,19 +10,27 @@ import "../styles/global.css";
     <title>Cargando TravelIA...</title>
 
     <script is:inline>
-      (function() {
-        const theme = localStorage.getItem('theme');
-        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        if (theme === 'dark' || (!theme && systemDark) || (theme === 'system' && systemDark)) {
-          document.documentElement.classList.add('dark');
+      (function () {
+        const theme = localStorage.getItem("theme");
+        const systemDark = window.matchMedia(
+          "(prefers-color-scheme: dark)"
+        ).matches;
+        if (
+          theme === "dark" ||
+          (!theme && systemDark) ||
+          (theme === "system" && systemDark)
+        ) {
+          document.documentElement.classList.add("dark");
         } else {
-          document.documentElement.classList.remove('dark');
+          document.documentElement.classList.remove("dark");
         }
       })();
     </script>
   </head>
-  
-  <body class="h-screen w-full flex flex-col justify-center items-center bg-ocean-50 dark:bg-slate-900 transition-colors duration-300">
+
+  <body
+    class="h-screen w-full flex flex-col justify-center items-center bg-ocean-50 dark:bg-slate-900 transition-colors duration-300"
+  >
     <img src="/logo.svg" alt="Cargando..." class="w-24 h-24 animate-pulse" />
 
     <script>
@@ -34,9 +42,16 @@ import "../styles/global.css";
       }
 
       setTimeout(() => {
-        const token = getCookie("authToken");
+        const localToken = localStorage.getItem("authToken");
+        const cookieToken = getCookie("authToken");
+
+        const token = localToken || cookieToken;
 
         if (token) {
+          if (localToken && !cookieToken) {
+            document.cookie = `authToken=${localToken}; path=/; secure; samesite=strict; max-age=2592000`;
+          }
+
           window.location.href = "/dashboard/dashboard/index.html";
         } else {
           window.location.href = "/login/index.html";

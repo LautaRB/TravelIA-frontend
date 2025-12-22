@@ -239,7 +239,6 @@ import Layout from "../../layouts/BaseLayout.astro";
         (logoutBtn as HTMLButtonElement).disabled = true;
 
         const accessToken = getCookie("authToken");
-
         const refreshToken = getCookie("refreshToken");
 
         if (accessToken && refreshToken) {
@@ -270,6 +269,9 @@ import Layout from "../../layouts/BaseLayout.astro";
 
         document.cookie =
           "refreshToken=; path=/; max-age=0; secure; samesite=strict";
+
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("refreshToken");
 
         window.location.href = "/login/index.html";
       });
