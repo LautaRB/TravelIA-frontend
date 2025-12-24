@@ -1,43 +1,40 @@
 const BASE_URL = import.meta.env.PUBLIC_API_BASE_URL;
 
 const getBackendErrorMessage = (data: any): string => {
-  console.log("Error crudo:", JSON.stringify(data));
-
   if (!data) return "Ocurrió un error desconocido.";
 
-  if (data.details && typeof data.details === 'string' && data.details.includes('ErrorDetail')) {
-      const match = data.details.match(/string='(.*?)'/);
-      if (match && match[1]) {
-          return match[1];
-      }
+  if (data.detail) return data.detail;
+  if (data.error) return data.error;
+
+  if (data.non_field_errors && Array.isArray(data.non_field_errors)) {
+    return data.non_field_errors[0];
   }
 
-  if (data.details && typeof data.details === 'object') {
-      return getBackendErrorMessage(data.details);
-  }
-
-  if (Array.isArray(data)) {
-    if (data.length > 0) return getBackendErrorMessage(data[0]);
-    return "Error de validación.";
-  }
-
-  if (typeof data === 'object') {
-    if (data.message && data.message !== "No se pudo registrar el usuario.") return data.message;
-    if (data.error && typeof data.error === 'string') return data.error;
-    if (data.detail && typeof data.detail === 'string') return data.detail;
-
-    const keys = Object.keys(data);
-    const filteredKeys = keys.filter(k => k !== 'success' && k !== 'message' && k !== 'details');
-
-    if (filteredKeys.length > 0) {
-      const firstKey = filteredKeys[0];
-      return getBackendErrorMessage(data[firstKey]);
+  if (data.details) {
+    if (typeof data.details === 'string' && data.details.includes('ErrorDetail')) {
+       const match = data.details.match(/string='(.*?)'/);
+       if (match && match[1]) return match[1];
     }
-
-    if (data.message) return data.message;
+    if (typeof data.details === 'object') {
+       return getBackendErrorMessage(data.details);
+    }
   }
 
-  if (typeof data === 'string') return data;
+  const keys = Object.keys(data).filter(k => 
+    !['success', 'message', 'code', 'status', 'details'].includes(k)
+  );
+
+  if (keys.length > 0) {
+    const firstKey = keys[0];
+    const errorValue = data[firstKey];
+    
+    if (Array.isArray(errorValue) && errorValue.length > 0) {
+      return `${firstKey}: ${errorValue[0]}`; 
+    }
+    if (typeof errorValue === 'string') return errorValue;
+  }
+
+  if (data.message) return data.message;
 
   return JSON.stringify(data);
 };
