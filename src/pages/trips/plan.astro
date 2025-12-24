@@ -3,195 +3,91 @@ import Layout from "../../layouts/BaseLayout.astro";
 ---
 
 <Layout title="Nuevo Viaje - TravelIA">
-  <div
-    class="min-h-screen bg-ocean-50 dark:bg-slate-900 relative transition-colors duration-300 pb-20"
-  >
-    <header
-      class="bg-white dark:bg-slate-800 px-6 pt-12 pb-4 shadow-sm sticky top-0 z-10 flex items-center gap-4 transition-colors"
-    >
-      <a
-        href="/dashboard/dashboard/index.html"
-        class="p-2 -ml-2 text-ocean-600 dark:text-ocean-400 hover:bg-ocean-50 dark:hover:bg-slate-700 rounded-full transition"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M15 19l-7-7 7-7"></path>
+  <div class="min-h-screen bg-ocean-50 dark:bg-slate-900 relative transition-colors duration-300 pb-20">
+    
+    <header class="bg-white dark:bg-slate-800 px-6 pt-12 pb-4 shadow-sm sticky top-0 z-10 flex items-center gap-4 transition-colors">
+      <a href="/dashboard/dashboard/index.html" class="p-2 -ml-2 text-ocean-600 dark:text-ocean-400 hover:bg-ocean-50 dark:hover:bg-slate-700 rounded-full transition">
+        <svg xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
         </svg>
       </a>
-      <h1 class="text-xl font-bold text-ocean-900 dark:text-white">
-        Planear Viaje
-      </h1>
+      <h1 class="text-xl font-bold text-ocean-900 dark:text-white">Planear Viaje</h1>
     </header>
 
     <main class="p-6">
+      
       <div id="step-form">
         <div class="mb-8 text-center">
-          <div
-            class="inline-flex items-center justify-center p-3 bg-ocean-100 dark:bg-slate-800 rounded-full mb-4"
-          >
+          <div class="inline-flex items-center justify-center p-3 bg-ocean-100 dark:bg-slate-800 rounded-full mb-4">
             <span class="text-3xl">✨</span>
           </div>
-          <h2 class="text-2xl font-bold text-ocean-900 dark:text-white">
-            ¿A dónde vamos?
-          </h2>
-          <p class="text-ocean-400 dark:text-slate-400 text-sm mt-1">
-            Contanos tu idea y la IA se encargará del resto!.
-          </p>
+          <h2 class="text-2xl font-bold text-ocean-900 dark:text-white">¿A dónde vamos?</h2>
+          <p class="text-ocean-400 dark:text-slate-400 text-sm mt-1">Contanos tu idea y la IA armará 3 planes perfectos!</p>
         </div>
 
         <form id="planTripForm" class="space-y-5">
           <div class="space-y-1">
-            <label
-              class="text-xs font-bold text-ocean-400 dark:text-slate-400 uppercase tracking-wider ml-1"
-              >Nombre del Viaje</label
-            >
-            <input
-              type="text"
-              id="titulo"
-              placeholder="Ej: Eurotrip 2025"
-              class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-ocean-100 dark:border-slate-700 rounded-xl text-ocean-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-ocean-500 transition-colors"
-              required
-            />
+            <label class="text-xs font-bold text-ocean-400 dark:text-slate-400 uppercase tracking-wider ml-1">Nombre del Viaje</label>
+            <input type="text" id="titulo" placeholder="Ej: Eurotrip 2025" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-ocean-100 dark:border-slate-700 rounded-xl text-ocean-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-ocean-500 transition-colors" required />
           </div>
 
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-1">
-              <label
-                class="text-xs font-bold text-ocean-400 dark:text-slate-400 uppercase tracking-wider ml-1"
-                >Origen</label
-              >
-              <input
-                type="text"
-                id="origen"
-                placeholder="Madrid"
-                class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-ocean-100 dark:border-slate-700 rounded-xl text-ocean-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-ocean-500 transition-colors"
-                required
-              />
+              <label class="text-xs font-bold text-ocean-400 dark:text-slate-400 uppercase tracking-wider ml-1">Origen</label>
+              <input type="text" id="origen" placeholder="Madrid" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-ocean-100 dark:border-slate-700 rounded-xl text-ocean-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-ocean-500 transition-colors" required />
             </div>
             <div class="space-y-1">
-              <label
-                class="text-xs font-bold text-ocean-400 dark:text-slate-400 uppercase tracking-wider ml-1"
-                >Destino</label
-              >
-              <input
-                type="text"
-                id="destino"
-                placeholder="París"
-                class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-ocean-100 dark:border-slate-700 rounded-xl text-ocean-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-ocean-500 transition-colors"
-                required
-              />
+              <label class="text-xs font-bold text-ocean-400 dark:text-slate-400 uppercase tracking-wider ml-1">Destino</label>
+              <input type="text" id="destino" placeholder="París" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-ocean-100 dark:border-slate-700 rounded-xl text-ocean-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-ocean-500 transition-colors" required />
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-1">
-              <label
-                class="text-xs font-bold text-ocean-400 dark:text-slate-400 uppercase tracking-wider ml-1"
-                >Desde</label
-              >
-              <input
-                type="date"
-                id="fecha_inicio"
-                class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-ocean-100 dark:border-slate-700 rounded-xl text-ocean-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-ocean-500 transition-colors"
-                required
-              />
+              <label class="text-xs font-bold text-ocean-400 dark:text-slate-400 uppercase tracking-wider ml-1">Desde</label>
+              <input type="date" id="fecha_inicio" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-ocean-100 dark:border-slate-700 rounded-xl text-ocean-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-ocean-500 transition-colors" required />
             </div>
             <div class="space-y-1">
-              <label
-                class="text-xs font-bold text-ocean-400 dark:text-slate-400 uppercase tracking-wider ml-1"
-                >Hasta</label
-              >
-              <input
-                type="date"
-                id="fecha_fin"
-                class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-ocean-100 dark:border-slate-700 rounded-xl text-ocean-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-ocean-500 transition-colors"
-                required
-              />
+              <label class="text-xs font-bold text-ocean-400 dark:text-slate-400 uppercase tracking-wider ml-1">Hasta</label>
+              <input type="date" id="fecha_fin" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-ocean-100 dark:border-slate-700 rounded-xl text-ocean-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-ocean-500 transition-colors" required />
             </div>
           </div>
 
           <div class="pt-4">
-            <button
-              type="submit"
-              id="btnPlanear"
-              class="w-full bg-gradient-to-r from-ocean-500 to-ocean-600 hover:from-ocean-600 hover:to-ocean-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-ocean-200 dark:shadow-none transform transition active:scale-[0.98] flex justify-center items-center gap-2"
-            >
-              <span id="btnText">Generar Itinerario con IA</span>
+            <button type="submit" id="btnPlanear" class="w-full bg-gradient-to-r from-ocean-500 to-ocean-600 hover:from-ocean-600 hover:to-ocean-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-ocean-200 dark:shadow-none transform transition active:scale-[0.98] flex justify-center items-center gap-2">
+              <span id="btnText">Generar Opciones con IA</span>
             </button>
           </div>
         </form>
       </div>
 
-      <div
-        id="step-loading"
-        class="hidden w-full flex-col items-center justify-center py-20 text-center space-y-4"
-      >
+      <div id="step-loading" class="hidden w-full flex-col items-center justify-center py-20 text-center space-y-4">
         <div class="relative w-20 h-20 mx-auto">
-          <div
-            class="absolute top-0 left-0 w-full h-full border-4 border-ocean-200 rounded-full animate-pulse"
-          >
-          </div>
-          <div
-            class="absolute top-0 left-0 w-full h-full border-4 border-ocean-600 rounded-full border-t-transparent animate-spin"
-          >
-          </div>
+            <div class="absolute top-0 left-0 w-full h-full border-4 border-ocean-200 rounded-full animate-pulse"></div>
+            <div class="absolute top-0 left-0 w-full h-full border-4 border-ocean-600 rounded-full border-t-transparent animate-spin"></div>
         </div>
-
-        <h3 class="text-xl font-bold text-ocean-900 dark:text-white">
-          Consultando a la IA...
-        </h3>
-        <p class="text-ocean-400 dark:text-slate-400 text-sm max-w-xs mx-auto">
-          La IA está analizando las mejores rutas y precios para tu viaje.
-        </p>
+        <h3 class="text-xl font-bold text-ocean-900 dark:text-white">Consultando a la IA...</h3>
+        <p class="text-ocean-400 dark:text-slate-400 text-sm max-w-xs mx-auto">La IA está diseñando 3 paquetes de viaje a medida para vos.</p>
       </div>
 
-      <div id="step-results" class="hidden space-y-8">
+      <div id="step-results" class="hidden space-y-6">
+        
         <div class="text-center">
-          <h2 class="text-2xl font-bold text-ocean-900 dark:text-white">
-            Elige tu aventura
-          </h2>
-          <p class="text-ocean-400 dark:text-slate-400 text-sm">
-            Selecciona una ruta y un medio de transporte.
-          </p>
+            <h2 class="text-2xl font-bold text-ocean-900 dark:text-white">Elige tu Aventura</h2>
+            <p class="text-ocean-400 dark:text-slate-400 text-sm">Selecciona la opción que más te guste.</p>
         </div>
 
-        <div>
-          <h3
-            class="text-sm font-bold text-ocean-400 dark:text-slate-400 uppercase tracking-wider mb-3"
-          >
-            1. Rutas Disponibles
-          </h3>
-          <div id="routes-container" class="space-y-3"></div>
+        <div id="options-container" class="space-y-4">
+            </div>
+
+        <div class="pt-2 pb-10">
+            <button id="btnConfirmar" disabled class="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl shadow-lg transition-all flex justify-center items-center gap-2">
+                Selecciona una opción
+            </button>
         </div>
 
-        <div>
-          <h3
-            class="text-sm font-bold text-ocean-400 dark:text-slate-400 uppercase tracking-wider mb-3"
-          >
-            2. Medios de Transporte
-          </h3>
-          <div id="media-container" class="space-y-3"></div>
-        </div>
-
-        <div class="pt-4 pb-10">
-          <button
-            id="btnConfirmar"
-            disabled
-            class="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl shadow-lg transition-all flex justify-center items-center gap-2"
-          >
-            Confirmar y Guardar Viaje
-          </button>
-        </div>
       </div>
+
     </main>
   </div>
 </Layout>
@@ -200,180 +96,204 @@ import Layout from "../../layouts/BaseLayout.astro";
   const BASE_URL = import.meta.env.PUBLIC_API_BASE_URL;
 
   function getCookie(name: string): string | null {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop()?.split(";").shift() || null;
-    return null;
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+      return null;
   }
 
-  const stepForm = document.getElementById("step-form");
-  const stepLoading = document.getElementById("step-loading");
-  const stepResults = document.getElementById("step-results");
-  const form = document.getElementById("planTripForm");
-  const btnPlanear = document.getElementById("btnPlanear");
-  const btnConfirmar = document.getElementById(
-    "btnConfirmar"
-  ) as HTMLButtonElement;
-  const routesContainer = document.getElementById("routes-container");
-  const mediaContainer = document.getElementById("media-container");
-
-  let planData: any = null;
-  let selectedRouteIndex: number | null = null;
-  let selectedMediaIndex: number | null = null;
-  let formValues: any = null;
-
-  const fechaInicioInput = document.getElementById(
-    "fecha_inicio"
-  ) as HTMLInputElement;
-  const fechaFinInput = document.getElementById(
-    "fecha_fin"
-  ) as HTMLInputElement;
+  // --- VALIDACIÓN FECHAS ---
+  const fechaInicioInput = document.getElementById('fecha_inicio') as HTMLInputElement;
+  const fechaFinInput = document.getElementById('fecha_fin') as HTMLInputElement;
 
   function setupDateValidation() {
-    if (!fechaInicioInput || !fechaFinInput) return;
+      if (!fechaInicioInput || !fechaFinInput) return;
+      const today = new Date().toISOString().split('T')[0];
+      fechaInicioInput.min = today;
+      fechaFinInput.min = today;
 
-    const today = new Date().toISOString().split("T")[0];
-
-    fechaInicioInput.min = today;
-    fechaFinInput.min = today;
-
-    fechaInicioInput.addEventListener("change", function () {
-      const startDate = this.value;
-
-      fechaFinInput.min = startDate;
-
-      if (fechaFinInput.value && fechaFinInput.value < startDate) {
-        fechaFinInput.value = "";
-        alert(
-          "La fecha de regreso se ha reiniciado porque debe ser posterior a la ida."
-        );
-      }
-    });
+      fechaInicioInput.addEventListener('change', function() {
+          const startDate = this.value;
+          fechaFinInput.min = startDate;
+          if (fechaFinInput.value && fechaFinInput.value < startDate) {
+              fechaFinInput.value = '';
+          }
+      });
   }
-
   setupDateValidation();
 
-  form?.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  // --- ELEMENTOS DOM ---
+  const stepForm = document.getElementById('step-form');
+  const stepLoading = document.getElementById('step-loading');
+  const stepResults = document.getElementById('step-results');
+  const form = document.getElementById('planTripForm');
+  const btnConfirmar = document.getElementById('btnConfirmar') as HTMLButtonElement;
+  const optionsContainer = document.getElementById('options-container');
 
+  // --- VARIABLES DE ESTADO ---
+  let availableOptions: any[] = []; 
+  let selectedOptionIndex: number | null = null;
+  let formValues: any = null;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
     formValues = {
-      titulo: (document.getElementById("titulo") as HTMLInputElement).value,
-      origen: (document.getElementById("origen") as HTMLInputElement).value,
-      destino: (document.getElementById("destino") as HTMLInputElement).value,
-      fecha_inicio: (
-        document.getElementById("fecha_inicio") as HTMLInputElement
-      ).value,
-      fecha_fin: (document.getElementById("fecha_fin") as HTMLInputElement)
-        .value,
+        titulo: (document.getElementById('titulo') as HTMLInputElement).value,
+        origen: (document.getElementById('origen') as HTMLInputElement).value,
+        destino: (document.getElementById('destino') as HTMLInputElement).value,
+        fecha_inicio: fechaInicioInput.value,
+        fecha_fin: fechaFinInput.value,
     };
 
-    stepForm?.classList.add("hidden");
-    stepLoading?.classList.remove("hidden");
+    stepForm?.classList.add('hidden');
+    stepLoading?.classList.remove('hidden');
+    stepLoading?.classList.add('flex'); // Asegura display flex para centrado
 
     try {
-      const token = getCookie("authToken");
+        const token = localStorage.getItem('authToken') || getCookie('authToken');
+        
+        const response = await fetch(`${BASE_URL}/viajes/planificar/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                origen: formValues.origen,
+                destino: formValues.destino,
+                fecha_inicio: formValues.fecha_inicio,
+                fecha_fin: formValues.fecha_fin
+            })
+        });
 
-      const response = await fetch(`${BASE_URL}/viajes/planificar/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          origen: formValues.origen,
-          destino: formValues.destino,
-          fecha_inicio: formValues.fecha_inicio,
-          fecha_fin: formValues.fecha_fin,
-        }),
-      });
+        const data = await response.json();
 
-      const data = await response.json();
+        if (!response.ok) throw new Error(data.message || "Error al planificar");
 
-      if (!response.ok) throw new Error(data.message || "Error al planificar");
+        if (data.opciones && data.opciones.opciones && Array.isArray(data.opciones.opciones)) {
+             availableOptions = data.opciones.opciones;
+        } else if (Array.isArray(data.opciones)) {
+             availableOptions = data.opciones;
+        } else {
+             availableOptions = [];
+             console.error("Formato de respuesta inesperado:", data);
+        }
+        renderOptions();
 
-      planData = data.opciones;
-      renderOptions();
+        stepLoading?.classList.add('hidden');
+        stepLoading?.classList.remove('flex');
+        stepResults?.classList.remove('hidden');
 
-      stepLoading?.classList.add("hidden");
-      stepResults?.classList.remove("hidden");
     } catch (error: any) {
-      alert("Error: " + error.message);
-      stepLoading?.classList.add("hidden");
-      stepForm?.classList.remove("hidden");
+        alert("Error: " + error.message);
+        stepLoading?.classList.add('hidden');
+        stepLoading?.classList.remove('flex');
+        stepForm?.classList.remove('hidden');
     }
   });
 
   function renderOptions() {
-    if (!routesContainer || !mediaContainer || !planData) return;
+      if (!optionsContainer) return;
+      optionsContainer.innerHTML = '';
 
-    routesContainer.innerHTML = "";
-    planData.rutas.forEach((ruta: any, index: number) => {
-      const card = document.createElement("div");
-      card.className = `p-4 rounded-xl border-2 cursor-pointer transition-all bg-white dark:bg-slate-800 ${selectedRouteIndex === index ? "border-ocean-500 ring-2 ring-ocean-200" : "border-gray-100 dark:border-slate-700 hover:border-ocean-300"}`;
-      card.innerHTML = `
-            <div class="flex justify-between items-center mb-1">
-                <h4 class="font-bold text-ocean-900 dark:text-white">${ruta.nombre}</h4>
-                ${selectedRouteIndex === index ? '<span class="text-ocean-500">✅</span>' : ""}
+      availableOptions.forEach((opcion: any, index: number) => {
+          const isSelected = selectedOptionIndex === index;
+          
+          const card = document.createElement('div');
+          card.className = `relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 bg-white dark:bg-slate-800 shadow-sm ${isSelected ? 'border-ocean-500 ring-4 ring-ocean-100 dark:ring-ocean-900 transform scale-[1.02]' : 'border-gray-100 dark:border-slate-700 hover:border-ocean-300'}`;
+          
+          card.innerHTML = `
+            ${isSelected ? '<div class="absolute -top-3 -right-3 bg-ocean-500 text-white rounded-full p-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>' : ''}
+            
+            <h3 class="text-lg font-bold text-ocean-900 dark:text-white mb-1">${opcion.titulo}</h3>
+            <p class="text-xs text-gray-500 dark:text-slate-400 mb-4 line-clamp-2">${opcion.descripcion}</p>
+            
+            <div class="bg-gray-50 dark:bg-slate-700/50 rounded-xl p-3 space-y-2 mb-3">
+                <div class="flex items-center gap-2 text-sm text-gray-700 dark:text-slate-300">
+                    <span class="text-lg">🛣️</span>
+                    <span class="font-medium">${opcion.ruta.nombre}</span>
+                    <span class="text-xs text-gray-400">(${opcion.ruta.distancia} ${opcion.ruta.unidad || 'km'})</span>
+                </div>
+                <div class="flex items-center gap-2 text-sm text-gray-700 dark:text-slate-300">
+                    <span class="text-lg">${opcion.medio.tipo === 'AEREO' ? '✈️' : '🚗'}</span>
+                    <span class="font-medium">${opcion.medio.nombre}</span>
+                </div>
             </div>
-            <div class="flex gap-4 text-sm text-gray-500 dark:text-slate-400">
-                <span class="flex items-center gap-1">📏 ${ruta.distancia} (Distancia)</span>
-                <span class="flex items-center gap-1">⏱️ ${ruta.duracion_horas}h</span>
-            </div>
-          `;
-      card.onclick = () => selectRoute(index);
-      routesContainer.appendChild(card);
-    });
 
-    mediaContainer.innerHTML = "";
-    planData.medios.forEach((medio: any, index: number) => {
-      const card = document.createElement("div");
-      card.className = `p-4 rounded-xl border-2 cursor-pointer transition-all bg-white dark:bg-slate-800 ${selectedMediaIndex === index ? "border-ocean-500 ring-2 ring-ocean-200" : "border-gray-100 dark:border-slate-700 hover:border-ocean-300"}`;
-      card.innerHTML = `
-            <div class="flex justify-between items-center mb-1">
-                <h4 class="font-bold text-ocean-900 dark:text-white">${medio.nombre}</h4>
-                ${selectedMediaIndex === index ? '<span class="text-ocean-500">✅</span>' : ""}
-            </div>
-            <div class="flex justify-between text-sm">
-                <span class="px-2 py-0.5 rounded bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-slate-300 text-xs font-bold uppercase">${medio.tipo}</span>
-                <span class="font-bold text-ocean-600 dark:text-ocean-400 text-lg">$ ${medio.precio}</span>
+            <div class="flex justify-between items-end border-t border-gray-100 dark:border-slate-700 pt-3">
+                <span class="text-xs font-bold uppercase text-ocean-400 tracking-wider">Precio Est.</span>
+                <span class="text-xl font-bold text-ocean-600 dark:text-ocean-400">$${opcion.medio.precio}</span>
             </div>
           `;
-      card.onclick = () => selectMedia(index);
-      mediaContainer.appendChild(card);
-    });
+          
+          card.onclick = () => selectOption(index);
+          optionsContainer.appendChild(card);
+      });
 
-    updateConfirmButton();
+      updateConfirmButton();
   }
 
-  function selectRoute(index: number) {
-    selectedRouteIndex = index;
-    renderOptions();
-  }
-
-  function selectMedia(index: number) {
-    selectedMediaIndex = index;
-    renderOptions();
+  function selectOption(index: number) {
+      selectedOptionIndex = index;
+      renderOptions();
   }
 
   function updateConfirmButton() {
-    if (selectedRouteIndex !== null && selectedMediaIndex !== null) {
-      btnConfirmar.disabled = false;
-      btnConfirmar.innerHTML = "Confirmar y Guardar Viaje";
-    } else {
-      btnConfirmar.disabled = true;
-      btnConfirmar.innerHTML = "Selecciona una opción de cada lista";
-    }
+      if (selectedOptionIndex !== null) {
+          btnConfirmar.disabled = false;
+          btnConfirmar.innerHTML = "Confirmar Opción y Guardar";
+          btnConfirmar.classList.remove('bg-gray-300');
+          btnConfirmar.classList.add('bg-green-600');
+      } else {
+          btnConfirmar.disabled = true;
+          btnConfirmar.innerHTML = "Selecciona una opción";
+      }
   }
 
-  btnConfirmar.addEventListener("click", () => {
-    const seleccion = {
-      ...formValues,
-      ruta_elegida: planData.rutas[selectedRouteIndex!],
-      medio_elegido: planData.medios[selectedMediaIndex!],
-    };
-    console.log("LISTO PARA GUARDAR:", seleccion);
-    alert(
-      "¡Genial! Has seleccionado tu viaje. (En el próximo paso lo guardamos en BD)"
-    );
+  btnConfirmar.addEventListener('click', async () => {
+      if (selectedOptionIndex === null) return;
+      
+      const opcionElegida = availableOptions[selectedOptionIndex];
+
+      const payload = {
+          titulo: formValues.titulo,
+          origen: formValues.origen,
+          destino: formValues.destino,
+          fecha_inicio: formValues.fecha_inicio,
+          fecha_fin: formValues.fecha_fin,
+          ruta_data: opcionElegida.ruta,
+          medio_data: opcionElegida.medio
+      };
+
+      const originalText = btnConfirmar.innerHTML;
+      btnConfirmar.disabled = true;
+      btnConfirmar.innerHTML = `<span class="animate-spin mr-2">⏳</span> Guardando...`;
+
+      try {
+          const token = localStorage.getItem('authToken') || getCookie('authToken');
+          
+          const response = await fetch(`${BASE_URL}/viajes/`, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify(payload)
+          });
+
+          const result = await response.json();
+
+          if (!response.ok) throw new Error(result.message || "Error al guardar");
+
+          alert("¡Viaje guardado correctamente! ✈️");
+          window.location.href = "/dashboard/dashboard/index.html";
+
+      } catch (error: any) {
+          console.error(error);
+          alert("Error: " + error.message);
+          btnConfirmar.disabled = false;
+          btnConfirmar.innerHTML = originalText;
+      }
   });
 </script>
