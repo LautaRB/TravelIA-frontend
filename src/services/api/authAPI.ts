@@ -1,19 +1,27 @@
 const BASE_URL = import.meta.env.PUBLIC_API_BASE_URL;
 
 const getBackendErrorMessage = (data: any): string => {
+  console.log("Error crudo recibido:", JSON.stringify(data));
+
   if (!data) return "Ocurrió un error desconocido.";
 
+  if (data.message) return data.message;
+
   if (data.detail) return data.detail;
-  if (data.error) return data.error;
+
+  if (data.error && typeof data.error === 'string') return data.error;
 
   if (data.non_field_errors && Array.isArray(data.non_field_errors)) {
     return data.non_field_errors[0];
   }
 
   if (data.details) {
-    if (typeof data.details === 'string' && data.details.includes('ErrorDetail')) {
-       const match = data.details.match(/string='(.*?)'/);
-       if (match && match[1]) return match[1];
+    if (typeof data.details === 'string') {
+        if (data.details.includes('ErrorDetail')) {
+            const match = data.details.match(/string='(.*?)'/);
+            if (match && match[1]) return match[1];
+        }
+        return data.details;
     }
     if (typeof data.details === 'object') {
        return getBackendErrorMessage(data.details);
@@ -21,7 +29,7 @@ const getBackendErrorMessage = (data: any): string => {
   }
 
   const keys = Object.keys(data).filter(k => 
-    !['success', 'message', 'code', 'status', 'details'].includes(k)
+    !['success', 'code', 'status', 'error', 'details'].includes(k)
   );
 
   if (keys.length > 0) {
@@ -29,12 +37,10 @@ const getBackendErrorMessage = (data: any): string => {
     const errorValue = data[firstKey];
     
     if (Array.isArray(errorValue) && errorValue.length > 0) {
-      return `${firstKey}: ${errorValue[0]}`; 
+      return errorValue[0];
     }
     if (typeof errorValue === 'string') return errorValue;
   }
-
-  if (data.message) return data.message;
 
   return JSON.stringify(data);
 };
