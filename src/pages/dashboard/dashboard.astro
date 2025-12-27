@@ -22,16 +22,22 @@ import HeroAction from "../../components/ui/HeroAction.astro";
       <section>
         <div class="flex justify-between items-end mb-4">
           <h3 class="text-lg font-bold text-ocean-900 dark:text-white">Tus Viajes</h3>
-          <a
-            href="#"
-            class="text-xs text-ocean-500 dark:text-ocean-400 font-medium hover:text-ocean-700"
-            >Ver todos</a
-          >
+          <span id="trip-count" class="text-xs text-ocean-500 dark:text-ocean-400 font-medium hidden">
+            0 viajes
+          </span>
         </div>
+
+        <div id="loading-state" class="flex flex-col items-center justify-center py-10 space-y-4">
+            <div class="w-10 h-10 border-4 border-ocean-200 border-t-ocean-600 rounded-full animate-spin"></div>
+            <p class="text-xs text-ocean-400 dark:text-slate-500">Cargando tus aventuras...</p>
+        </div>
+
+        <div id="trips-container" class="space-y-4 hidden">
+            </div>
 
         <div
           id="empty-state"
-          class="flex flex-col items-center justify-center py-10 bg-white dark:bg-slate-800 rounded-2xl border-2 border-dashed border-ocean-100 dark:border-slate-700 transition-colors"
+          class="hidden flex-col items-center justify-center py-10 bg-white dark:bg-slate-800 rounded-2xl border-2 border-dashed border-ocean-100 dark:border-slate-700 transition-colors"
         >
           <div class="bg-ocean-50 dark:bg-slate-700 p-4 rounded-full mb-3">
              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-ocean-300 dark:text-ocean-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -53,11 +59,147 @@ import HeroAction from "../../components/ui/HeroAction.astro";
 </Layout>
 
 <script>
+  const BASE_URL = import.meta.env.PUBLIC_API_BASE_URL || "https://travelia-backend.onrender.com/api";
+
   const createTripBtn = document.getElementById('createTripBtn');
+  const loadingState = document.getElementById('loading-state');
+  const emptyState = document.getElementById('empty-state');
+  const tripsContainer = document.getElementById('trips-container');
+  const tripCountLabel = document.getElementById('trip-count');
 
   if (createTripBtn) {
     createTripBtn.addEventListener('click', () => {
       window.location.href = '/trips/plan/index.html';
     });
   }
+
+  function getCookie(name: string): string | null {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+      return null;
+  }
+
+  function formatDate(dateString: string): string {
+      if (!dateString) return '';
+      const [year, month, day] = dateString.split('-');
+      return `${day}/${month}`;
+  }
+
+  function calculateDays(start: string, end: string): number {
+      const d1 = new Date(start);
+      const d2 = new Date(end);
+      const diffTime = Math.abs(d2.getTime() - d1.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+      return diffDays + 1;
+  }
+
+  async function loadTrips() {
+      const token = localStorage.getItem('authToken') || getCookie('authToken');
+
+      if (!token) {
+          window.location.href = '/login/index.html';
+          return;
+      }
+
+      try {
+          const response = await fetch(`${BASE_URL}/viajes/`, {
+              method: 'GET',
+              headers: {
+                  'Authorization': `Bearer ${token}`,
+                  'Content-Type': 'application/json'
+              }
+          });
+
+          if (response.status === 401) {
+              localStorage.removeItem('authToken');
+              window.location.href = '/login/index.html';
+              return;
+          }
+
+          if (!response.ok) throw new Error("Error al obtener viajes");
+
+          const data = await response.json();
+          const viajes = Array.isArray(data) ? data : (data.results || []);
+
+          renderTrips(viajes);
+
+      } catch (error) {
+          console.error("Error cargando dashboard:", error);
+          showEmptyState();
+      }
+  }
+
+  function renderTrips(viajes: any[]) {
+      loadingState?.classList.add('hidden');
+
+      if (viajes.length === 0) {
+          showEmptyState();
+          return;
+      }
+
+      tripsContainer?.classList.remove('hidden');
+      if (tripCountLabel) {
+          tripCountLabel.innerText = `${viajes.length} viajes`;
+          tripCountLabel.classList.remove('hidden');
+      }
+
+      if (tripsContainer) tripsContainer.innerHTML = '';
+
+      viajes.forEach(viaje => {
+          const dias = calculateDays(viaje.fecha_inicio, viaje.fecha_fin);
+          
+          const cardHTML = `
+            <div class="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-slate-700 hover:shadow-md transition-shadow cursor-pointer relative overflow-hidden group">
+                
+                <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-ocean-400 to-ocean-600"></div>
+
+                <div class="flex justify-between items-start mb-2 pl-2">
+                    <div>
+                        <h4 class="font-bold text-ocean-900 dark:text-white text-lg leading-tight mb-1">${viaje.titulo}</h4>
+                        <div class="flex items-center text-xs text-gray-500 dark:text-slate-400 gap-1">
+                            <span class="font-medium text-ocean-600 dark:text-ocean-400">${viaje.destino}</span>
+                            <span>•</span>
+                            <span>${dias} días</span>
+                        </div>
+                    </div>
+                    ${viaje.precio ? `<span class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold px-2 py-1 rounded-lg">$${viaje.precio}</span>` : ''}
+                </div>
+
+                <div class="flex items-center gap-3 mt-4 pl-2">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Fecha</span>
+                        <span class="text-sm font-medium text-gray-700 dark:text-slate-300">
+                            ${formatDate(viaje.fecha_inicio)}
+                        </span>
+                    </div>
+                    
+                    <div class="h-8 w-px bg-gray-100 dark:bg-slate-700 mx-1"></div>
+
+                     <div class="flex items-center justify-center w-8 h-8 rounded-full bg-ocean-50 dark:bg-slate-700/50 text-ocean-500 dark:text-ocean-300">
+                        <span class="text-sm">✈️</span> 
+                     </div>
+                </div>
+            </div>
+          `;
+          
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = cardHTML;
+          const cardElement = tempDiv.firstElementChild as HTMLElement;
+          cardElement.addEventListener('click', () => {
+             console.log("Ver viaje:", viaje.id);
+          });
+
+          tripsContainer?.appendChild(cardElement);
+      });
+  }
+
+  function showEmptyState() {
+      loadingState?.classList.add('hidden');
+      emptyState?.classList.remove('hidden');
+      tripsContainer?.classList.add('hidden');
+  }
+
+  loadTrips();
+
 </script>
