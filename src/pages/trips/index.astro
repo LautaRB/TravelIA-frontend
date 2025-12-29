@@ -1,0 +1,228 @@
+---
+import Layout from "../../layouts/BaseLayout.astro";
+import BottomNav from "../../components/layout/BottomNav.astro";
+import DashboardHeader from "../../components/layout/DashboardHeader.astro";
+---
+
+<Layout title="Mis Viajes - TravelIA">
+  <div class="min-h-screen bg-ocean-50 dark:bg-slate-900 pb-24 relative transition-colors duration-300">
+    
+    <DashboardHeader />
+
+    <main class="px-6 mt-6 space-y-6">
+      
+      <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-ocean-900 dark:text-white">Mis Viajes</h1>
+        <a 
+          href="/trips/plan/index.html" 
+          class="bg-ocean-600 hover:bg-ocean-700 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-md transition-colors flex items-center gap-2"
+        >
+          <span>+ Nuevo</span>
+        </a>
+      </div>
+
+      <div id="loading-state" class="flex flex-col items-center justify-center py-20 space-y-4">
+          <div class="w-10 h-10 border-4 border-ocean-200 border-t-ocean-600 rounded-full animate-spin"></div>
+          <p class="text-xs text-ocean-400 dark:text-slate-500">Buscando tus viajes...</p>
+      </div>
+
+      <div id="trips-container" class="space-y-4 hidden">
+          </div>
+
+      <div
+        id="empty-state"
+        class="hidden flex-col items-center justify-center py-20 bg-white dark:bg-slate-800 rounded-2xl border-2 border-dashed border-ocean-100 dark:border-slate-700 transition-colors"
+      >
+        <div class="bg-ocean-50 dark:bg-slate-700 p-4 rounded-full mb-3">
+           <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-ocean-300 dark:text-ocean-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          </svg>
+        </div>
+        <p class="text-ocean-800 dark:text-white font-medium">
+          Tu pasaporte está vacío
+        </p>
+        <a href="/trips/plan/index.html" class="text-sm text-ocean-600 dark:text-ocean-400 mt-2 font-medium hover:underline">
+          ¡Planear mi primer viaje!
+        </a>
+      </div>
+
+    </main>
+
+    <BottomNav activePage="trips" />
+  </div>
+</Layout>
+
+<script>
+  const BASE_URL = import.meta.env.PUBLIC_API_BASE_URL || "https://travelia-backend.onrender.com/api";
+  
+  const loadingState = document.getElementById('loading-state');
+  const emptyState = document.getElementById('empty-state');
+  const tripsContainer = document.getElementById('trips-container');
+
+  function getCookie(name: string): string | null {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+      return null;
+  }
+
+  function formatDate(dateString: string): string {
+      if (!dateString) return '';
+      const [year, month, day] = dateString.split('-');
+      return `${day}/${month}/${year}`;
+  }
+
+  function calculateDays(start: string, end: string): number {
+      const d1 = new Date(start);
+      const d2 = new Date(end);
+      const diffTime = Math.abs(d2.getTime() - d1.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+      return diffDays + 1;
+  }
+
+  async function loadTrips() {
+      const token = localStorage.getItem('authToken') || getCookie('authToken');
+      if (!token) {
+          window.location.href = '/login/index.html';
+          return;
+      }
+
+      try {
+          const response = await fetch(`${BASE_URL}/viajes/`, {
+              headers: { 'Authorization': `Bearer ${token}` }
+          });
+
+          if (response.status === 401) {
+              window.location.href = '/login/index.html';
+              return;
+          }
+
+          const data = await response.json();
+          const viajes = Array.isArray(data) ? data : (data.results || []);
+
+          renderTrips(viajes);
+
+      } catch (error) {
+          console.error("Error cargando viajes:", error);
+          showEmptyState();
+      }
+  }
+
+  async function deleteTrip(tripId: number, cardElement: HTMLElement) {
+      if (!confirm("¿Estás seguro de que querés eliminar este viaje? Esta acción no se puede deshacer.")) {
+          return;
+      }
+
+      const token = localStorage.getItem('authToken') || getCookie('authToken');
+      
+      cardElement.style.opacity = '0.5';
+
+      try {
+          const response = await fetch(`${BASE_URL}/viajes/${tripId}/`, {
+              method: 'DELETE',
+              headers: { 
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
+          });
+
+          if (response.ok) {
+              cardElement.remove();
+              
+              if (tripsContainer && tripsContainer.children.length === 0) {
+                  showEmptyState();
+              }
+          } else {
+              alert("No se pudo eliminar el viaje. Intenta nuevamente.");
+              cardElement.style.opacity = '1';
+          }
+      } catch (error) {
+          console.error("Error eliminando:", error);
+          alert("Error de conexión.");
+          cardElement.style.opacity = '1';
+      }
+  }
+
+  function renderTrips(viajes: any[]) {
+      loadingState?.classList.add('hidden');
+
+      if (viajes.length === 0) {
+          showEmptyState();
+          return;
+      }
+
+      tripsContainer?.classList.remove('hidden');
+      if (tripsContainer) tripsContainer.innerHTML = '';
+
+      viajes.forEach(viaje => {
+          const dias = calculateDays(viaje.fecha_inicio, viaje.fecha_fin);
+          
+          const cardDiv = document.createElement('div');
+          cardDiv.className = "bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-slate-700 relative overflow-hidden group transition-all";
+          
+          cardDiv.innerHTML = `
+                <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-ocean-400 to-ocean-600"></div>
+
+                <div class="absolute top-4 right-4 flex gap-2 z-10">
+                    
+                    <button class="edit-btn p-2 rounded-full bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-slate-300 hover:bg-ocean-100 hover:text-ocean-600 transition-colors" title="Editar">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                    </button>
+
+                    <button class="delete-btn p-2 rounded-full bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-100 transition-colors" title="Eliminar">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="pr-16"> <h4 class="font-bold text-ocean-900 dark:text-white text-lg leading-tight mb-1 truncate">${viaje.titulo}</h4>
+                    <div class="flex items-center text-xs text-gray-500 dark:text-slate-400 gap-1 mb-3">
+                        <span class="font-medium text-ocean-600 dark:text-ocean-400">${viaje.destino}</span>
+                        <span>•</span>
+                        <span>${dias} días</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between mt-2 pt-3 border-t border-gray-100 dark:border-slate-700">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Fecha</span>
+                        <span class="text-sm font-medium text-gray-700 dark:text-slate-300">
+                            ${formatDate(viaje.fecha_inicio)}
+                        </span>
+                    </div>
+                    ${viaje.precio ? `<span class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold px-2 py-1 rounded-lg">$${viaje.precio}</span>` : ''}
+                </div>
+          `;
+
+          const deleteBtn = cardDiv.querySelector('.delete-btn');
+          deleteBtn?.addEventListener('click', (e) => {
+              e.stopPropagation();
+              deleteTrip(viaje.id, cardDiv);
+          });
+
+          const editBtn = cardDiv.querySelector('.edit-btn');
+          editBtn?.addEventListener('click', (e) => {
+              e.stopPropagation();
+              window.location.href = `/trips/edit/index.html?id=${viaje.id}`;
+          });
+
+          cardDiv.addEventListener('click', () => {
+              window.location.href = `/trips/detail/index.html?id=${viaje.id}`;
+          });
+
+          tripsContainer?.appendChild(cardDiv);
+      });
+  }
+
+  function showEmptyState() {
+      loadingState?.classList.add('hidden');
+      emptyState?.classList.remove('hidden');
+      tripsContainer?.classList.add('hidden');
+  }
+
+  loadTrips();
+
+</script>
