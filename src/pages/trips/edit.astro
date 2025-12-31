@@ -1,0 +1,127 @@
+---
+import Layout from "../../layouts/BaseLayout.astro";
+---
+
+<Layout title="Editar Viaje">
+  <div class="min-h-screen bg-ocean-50 dark:bg-slate-900 pb-24 transition-colors">
+    
+    <header class="bg-white dark:bg-slate-800 shadow-sm sticky top-0 z-10 px-4 py-3 flex items-center gap-3">
+        <button id="cancel-btn" class="text-sm font-medium text-gray-500 hover:text-gray-700">Cancelar</button>
+        <h1 class="flex-1 text-center text-lg font-bold text-ocean-900 dark:text-white">Editar Viaje</h1>
+        <button id="save-btn" class="text-sm font-bold text-ocean-600 hover:text-ocean-700">Guardar</button>
+    </header>
+
+    <main class="px-6 mt-6">
+        <form id="edit-form" class="space-y-5">
+            
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-bold text-ocean-700 uppercase">Título del Viaje</label>
+                <input type="text" id="titulo" name="titulo" class="w-full p-3 rounded-xl border border-gray-200 focus:border-ocean-500 focus:ring-1 focus:ring-ocean-500 outline-none transition dark:bg-slate-800 dark:border-slate-600 dark:text-white" required />
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-bold text-ocean-700 uppercase">Inicio</label>
+                    <input type="date" id="fecha_inicio" name="fecha_inicio" class="w-full p-3 rounded-xl border border-gray-200 dark:bg-slate-800 dark:border-slate-600 dark:text-white" required />
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-bold text-ocean-700 uppercase">Fin</label>
+                    <input type="date" id="fecha_fin" name="fecha_fin" class="w-full p-3 rounded-xl border border-gray-200 dark:bg-slate-800 dark:border-slate-600 dark:text-white" required />
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-bold text-ocean-700 uppercase">Origen</label>
+                <input type="text" id="origen" name="origen" class="w-full p-3 rounded-xl border border-gray-200 dark:bg-slate-800 dark:border-slate-600 dark:text-white" required />
+            </div>
+
+             <div class="flex flex-col gap-1">
+                <label class="text-xs font-bold text-ocean-700 uppercase">Destino</label>
+                <input type="text" id="destino" name="destino" class="w-full p-3 rounded-xl border border-gray-200 dark:bg-slate-800 dark:border-slate-600 dark:text-white" required />
+            </div>
+
+             <div class="flex flex-col gap-1">
+                <label class="text-xs font-bold text-ocean-700 uppercase">Presupuesto / Precio</label>
+                <input type="number" id="precio" name="precio" step="0.01" class="w-full p-3 rounded-xl border border-gray-200 dark:bg-slate-800 dark:border-slate-600 dark:text-white" />
+            </div>
+
+        </form>
+    </main>
+  </div>
+</Layout>
+
+<script>
+  const BASE_URL = import.meta.env.PUBLIC_API_BASE_URL || "https://travelia-backend.onrender.com/api";
+  const urlParams = new URLSearchParams(window.location.search);
+  const tripId = urlParams.get('id');
+  const token = localStorage.getItem('authToken');
+  const form = document.getElementById('edit-form') as HTMLFormElement;
+  const saveBtn = document.getElementById('save-btn');
+  const cancelBtn = document.getElementById('cancel-btn');
+
+  async function loadData() {
+      if (!token || !tripId) return window.location.href = '/trips/index.html';
+
+      try {
+          const res = await fetch(`${BASE_URL}/viajes/${tripId}/`, {
+              headers: { 'Authorization': `Bearer ${token}` }
+          });
+          if (!res.ok) throw new Error("Error loading");
+          const data = await res.json();
+          
+          (document.getElementById('titulo') as HTMLInputElement).value = data.titulo || '';
+          (document.getElementById('origen') as HTMLInputElement).value = data.origen || '';
+          (document.getElementById('destino') as HTMLInputElement).value = data.destino || '';
+          (document.getElementById('fecha_inicio') as HTMLInputElement).value = data.fecha_inicio || '';
+          (document.getElementById('fecha_fin') as HTMLInputElement).value = data.fecha_fin || '';
+          (document.getElementById('precio') as HTMLInputElement).value = data.precio || '';
+
+      } catch (e) {
+          alert("Error al cargar datos del viaje");
+          window.location.href = '/trips/index.html';
+      }
+  }
+
+  async function saveChanges() {
+      if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+      }
+
+      if(saveBtn) saveBtn.textContent = "Guardando...";
+
+      const formData = new FormData(form);
+      const payload = Object.fromEntries(formData.entries());
+
+      try {
+          const res = await fetch(`${BASE_URL}/viajes/${tripId}/`, {
+              method: 'PATCH',
+              headers: { 
+                  'Authorization': `Bearer ${token}`,
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(payload)
+          });
+
+          const json = await res.json();
+
+          if (res.ok) {
+              window.location.href = `/trips/index.html`; 
+          } else {
+             alert(json.message || json.detail || "Error al actualizar");
+          }
+
+      } catch (error) {
+          console.error(error);
+          alert("Error de conexión");
+      } finally {
+          if(saveBtn) saveBtn.textContent = "Guardar";
+      }
+  }
+
+  loadData();
+  
+  saveBtn?.addEventListener('click', saveChanges);
+  cancelBtn?.addEventListener('click', () => window.history.back());
+
+</script>
