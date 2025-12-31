@@ -1,0 +1,136 @@
+---
+import Layout from "../../layouts/BaseLayout.astro";
+import BottomNav from "../../components/layout/BottomNav.astro";
+---
+
+<Layout title="Detalle del Viaje">
+  <div class="min-h-screen bg-ocean-50 dark:bg-slate-900 pb-24 relative transition-colors duration-300">
+    
+    <header class="bg-white dark:bg-slate-800 shadow-sm sticky top-0 z-10 px-4 py-3 flex items-center gap-3">
+        <button id="back-btn" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700 text-ocean-600 dark:text-ocean-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+        </button>
+        <h1 class="text-lg font-bold text-ocean-900 dark:text-white">Detalle del Viaje</h1>
+    </header>
+
+    <main class="px-6 mt-6 space-y-6">
+      <div id="loading-state" class="flex justify-center py-10">
+        <div class="w-10 h-10 border-4 border-ocean-200 border-t-ocean-600 rounded-full animate-spin"></div>
+      </div>
+
+      <div id="trip-content" class="hidden space-y-6">
+          
+          <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-ocean-100 dark:border-slate-700">
+              <h2 id="trip-title" class="text-2xl font-bold text-ocean-900 dark:text-white mb-2"></h2>
+              
+              <div class="flex items-center gap-2 text-ocean-600 dark:text-ocean-400 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                </svg>
+                <span id="trip-destination" class="font-medium"></span>
+              </div>
+
+              <div class="flex justify-between items-center py-4 border-t border-gray-100 dark:border-slate-700">
+                  <div class="text-center">
+                      <p class="text-xs text-gray-500 uppercase">Inicio</p>
+                      <p id="trip-start" class="font-bold text-gray-800 dark:text-slate-200"></p>
+                  </div>
+                  <div class="h-px w-10 bg-gray-300"></div>
+                  <div class="text-center">
+                      <p class="text-xs text-gray-500 uppercase">Fin</p>
+                      <p id="trip-end" class="font-bold text-gray-800 dark:text-slate-200"></p>
+                  </div>
+              </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+              <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700">
+                  <p class="text-xs text-gray-500 mb-1">Costo Estimado</p>
+                  <p id="trip-price" class="text-lg font-bold text-green-600"></p>
+              </div>
+              <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700">
+                  <p class="text-xs text-gray-500 mb-1">Origen</p>
+                  <p id="trip-origin" class="text-lg font-bold text-ocean-600"></p>
+              </div>
+          </div>
+          
+          <button id="fab-edit" class="fixed bottom-24 right-6 bg-ocean-600 text-white p-4 rounded-full shadow-lg hover:bg-ocean-700 transition-colors z-20">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+          </button>
+
+      </div>
+    </main>
+
+    <BottomNav activePage="trips" />
+  </div>
+</Layout>
+
+<script>
+  const BASE_URL = import.meta.env.PUBLIC_API_BASE_URL || "https://travelia-backend.onrender.com/api";
+  
+  const urlParams = new URLSearchParams(window.location.search);
+  const tripId = urlParams.get('id');
+  const loading = document.getElementById('loading-state');
+  const content = document.getElementById('trip-content');
+  const backBtn = document.getElementById('back-btn');
+  const fabEdit = document.getElementById('fab-edit');
+
+  backBtn?.addEventListener('click', () => window.history.back());
+  
+  if (fabEdit && tripId) {
+      fabEdit.addEventListener('click', () => {
+          window.location.href = `/trips/edit/index.html?id=${tripId}`;
+      });
+  }
+
+  async function loadTripDetails() {
+      const token = localStorage.getItem('authToken');
+      if (!token || !tripId) {
+          window.location.href = '/trips/index.html';
+          return;
+      }
+
+      try {
+          const response = await fetch(`${BASE_URL}/viajes/${tripId}/`, {
+              headers: { 'Authorization': `Bearer ${token}` }
+          });
+
+          if (!response.ok) throw new Error("Error fetching trip");
+
+          const data = await response.json();
+          renderDetails(data);
+
+      } catch (error) {
+          console.error(error);
+          alert("No se pudo cargar el viaje");
+          window.location.href = '/trips/index.html';
+      }
+  }
+
+  function renderDetails(trip: any) {
+      loading?.classList.add('hidden');
+      content?.classList.remove('hidden');
+
+      const formatDate = (d: string) => {
+          const [y, m, d_day] = d.split('-');
+          return `${d_day}/${m}/${y}`;
+      };
+
+      if(document.getElementById('trip-title')) document.getElementById('trip-title')!.textContent = trip.titulo;
+      if(document.getElementById('trip-destination')) document.getElementById('trip-destination')!.textContent = trip.destino;
+      if(document.getElementById('trip-start')) document.getElementById('trip-start')!.textContent = formatDate(trip.fecha_inicio);
+      if(document.getElementById('trip-end')) document.getElementById('trip-end')!.textContent = formatDate(trip.fecha_fin);
+      if(document.getElementById('trip-origin')) document.getElementById('trip-origin')!.textContent = trip.origen;
+      
+      const priceElement = document.getElementById('trip-price');
+      if (priceElement) {
+          priceElement.textContent = trip.precio ? `$${trip.precio}` : 'N/A';
+      }
+  }
+
+  loadTripDetails();
+</script>
