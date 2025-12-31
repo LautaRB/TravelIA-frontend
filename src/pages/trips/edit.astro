@@ -39,12 +39,6 @@ import Layout from "../../layouts/BaseLayout.astro";
                 <label class="text-xs font-bold text-ocean-700 uppercase">Destino</label>
                 <input type="text" id="destino" name="destino" class="w-full p-3 rounded-xl border border-gray-200 dark:bg-slate-800 dark:border-slate-600 dark:text-white" required />
             </div>
-
-             <div class="flex flex-col gap-1">
-                <label class="text-xs font-bold text-ocean-700 uppercase">Presupuesto / Precio</label>
-                <input type="number" id="precio" name="precio" step="0.01" class="w-full p-3 rounded-xl border border-gray-200 dark:bg-slate-800 dark:border-slate-600 dark:text-white" />
-            </div>
-
         </form>
     </main>
   </div>
@@ -52,43 +46,63 @@ import Layout from "../../layouts/BaseLayout.astro";
 
 <script>
   const BASE_URL = import.meta.env.PUBLIC_API_BASE_URL || "https://travelia-backend.onrender.com/api";
+  
+  const form = document.getElementById('edit-form') as HTMLFormElement;
+  const saveBtn = document.getElementById('save-btn') as HTMLButtonElement;
+  const cancelBtn = document.getElementById('cancel-btn');
   const urlParams = new URLSearchParams(window.location.search);
   const tripId = urlParams.get('id');
   const token = localStorage.getItem('authToken');
-  const form = document.getElementById('edit-form') as HTMLFormElement;
-  const saveBtn = document.getElementById('save-btn');
-  const cancelBtn = document.getElementById('cancel-btn');
 
   async function loadData() {
-      if (!token || !tripId) return window.location.href = '/trips/index.html';
+      if (!token || !tripId) {
+          alert("No se identificó el viaje.");
+          window.location.href = '/trips/index.html';
+          return;
+      }
 
       try {
+          if(saveBtn) saveBtn.disabled = true;
+          
           const res = await fetch(`${BASE_URL}/viajes/${tripId}/`, {
               headers: { 'Authorization': `Bearer ${token}` }
           });
-          if (!res.ok) throw new Error("Error loading");
+          
+          if (!res.ok) throw new Error("Error cargando datos");
+          
           const data = await res.json();
           
-          (document.getElementById('titulo') as HTMLInputElement).value = data.titulo || '';
-          (document.getElementById('origen') as HTMLInputElement).value = data.origen || '';
-          (document.getElementById('destino') as HTMLInputElement).value = data.destino || '';
-          (document.getElementById('fecha_inicio') as HTMLInputElement).value = data.fecha_inicio || '';
-          (document.getElementById('fecha_fin') as HTMLInputElement).value = data.fecha_fin || '';
-          (document.getElementById('precio') as HTMLInputElement).value = data.precio || '';
+          const setVal = (id: string, val: any) => {
+              const el = document.getElementById(id) as HTMLInputElement;
+              if(el) el.value = val || '';
+          };
 
+          setVal('titulo', data.titulo);
+          setVal('origen', data.origen);
+          setVal('destino', data.destino);
+          setVal('fecha_inicio', data.fecha_inicio);
+          setVal('fecha_fin', data.fecha_fin);
       } catch (e) {
-          alert("Error al cargar datos del viaje");
+          console.error(e);
+          alert("No se pudieron cargar los datos del viaje.");
           window.location.href = '/trips/index.html';
+      } finally {
+          if(saveBtn) saveBtn.disabled = false;
       }
   }
 
-  async function saveChanges() {
+  async function saveChanges(e: Event) {
+      e.preventDefault();
+
       if (!form.checkValidity()) {
           form.reportValidity();
           return;
       }
 
-      if(saveBtn) saveBtn.textContent = "Guardando...";
+      const originalText = saveBtn.innerText;
+      saveBtn.innerText = "Actualizando itinerario...";
+      saveBtn.disabled = true;
+      saveBtn.classList.add('opacity-75', 'cursor-not-allowed');
 
       const formData = new FormData(form);
       const payload = Object.fromEntries(formData.entries());
@@ -106,21 +120,23 @@ import Layout from "../../layouts/BaseLayout.astro";
           const json = await res.json();
 
           if (res.ok) {
-              window.location.href = `/trips/index.html`; 
+              window.location.replace(`/trips/detail/index.html?id=${tripId}`); 
           } else {
-             alert(json.message || json.detail || "Error al actualizar");
+              alert(json.message || json.detail || "No se pudo actualizar el viaje. Intenta nuevamente.");
           }
 
       } catch (error) {
           console.error(error);
-          alert("Error de conexión");
+          alert("Error de conexión con el servidor.");
       } finally {
-          if(saveBtn) saveBtn.textContent = "Guardar";
+          saveBtn.innerText = originalText;
+          saveBtn.disabled = false;
+          saveBtn.classList.remove('opacity-75', 'cursor-not-allowed');
       }
   }
 
   loadData();
-  
+
   saveBtn?.addEventListener('click', saveChanges);
   cancelBtn?.addEventListener('click', () => window.history.back());
 

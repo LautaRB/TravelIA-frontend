@@ -55,6 +55,16 @@ import BottomNav from "../../components/layout/BottomNav.astro";
                   <p id="trip-origin" class="text-lg font-bold text-ocean-600"></p>
               </div>
           </div>
+
+          <div id="route-info" class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700">
+              <p class="text-xs text-gray-500 mb-1">Ruta</p>
+              <p id="trip-route" class="text-lg font-bold text-ocean-600"></p>
+          </div>
+
+          <div id="medio-info" class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700">
+              <p class="text-xs text-gray-500 mb-1">Medio de Transporte</p>
+              <p id="trip-medio" class="text-lg font-bold text-ocean-600"></p>
+          </div>
           
           <button id="fab-edit" class="fixed bottom-24 right-6 bg-ocean-600 text-white p-4 rounded-full shadow-lg hover:bg-ocean-700 transition-colors z-20">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -116,6 +126,7 @@ import BottomNav from "../../components/layout/BottomNav.astro";
       content?.classList.remove('hidden');
 
       const formatDate = (d: string) => {
+          if(!d) return '-';
           const [y, m, d_day] = d.split('-');
           return `${d_day}/${m}/${y}`;
       };
@@ -128,7 +139,34 @@ import BottomNav from "../../components/layout/BottomNav.astro";
       
       const priceElement = document.getElementById('trip-price');
       if (priceElement) {
-          priceElement.textContent = trip.precio ? `$${trip.precio}` : 'N/A';
+          priceElement.textContent = trip.precio ? `$${trip.precio}` : 'Pendiente de cálculo';
+          priceElement.className = trip.precio ? "text-lg font-bold text-green-600" : "text-sm font-bold text-orange-500";
+      }
+      
+      const rutaContainer = document.getElementById('route-info');
+      if (rutaContainer) {
+          if (trip.ruta) {
+             rutaContainer.innerHTML = `
+                <p class="text-xs text-gray-500 mb-1">Ruta Sugerida</p>
+                <p class="font-bold text-ocean-700">${trip.ruta.nombre_Ruta}</p>
+                <p class="text-xs text-gray-400">${trip.ruta.distancia} km • ${trip.ruta.tiempo} hs</p>
+             `;
+          } else {
+             rutaContainer.innerHTML = `<p class="text-sm text-orange-500 italic">Ruta por definir</p>`;
+          }
+      }
+
+      const medioContainer = document.getElementById('medio-info');
+      if (medioContainer) {
+           if (trip.medio) {
+             medioContainer.innerHTML = `
+                <p class="text-xs text-gray-500 mb-1">Transporte</p>
+                <p class="font-bold text-ocean-700">${trip.medio.nombre_Medio}</p>
+                <p class="text-xs text-gray-400 capitalize">${trip.medio.tipo}</p>
+             `;
+          } else {
+             medioContainer.innerHTML = `<p class="text-sm text-orange-500 italic">Transporte por definir</p>`;
+          }
       }
   }
 
