@@ -59,6 +59,8 @@ import HeroAction from "../../components/ui/HeroAction.astro";
 </Layout>
 
 <script>
+  import { createDashboardCard } from "../../components/ui/DashboardCard.ts";
+
   const BASE_URL = import.meta.env.PUBLIC_API_BASE_URL || "https://travelia-backend.onrender.com/api";
 
   const createTripBtn = document.getElementById('createTripBtn');
@@ -78,20 +80,6 @@ import HeroAction from "../../components/ui/HeroAction.astro";
       const parts = value.split(`; ${name}=`);
       if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
       return null;
-  }
-
-  function formatDate(dateString: string): string {
-      if (!dateString) return '';
-      const [year, month, day] = dateString.split('-');
-      return `${day}/${month}`;
-  }
-
-  function calculateDays(start: string, end: string): number {
-      const d1 = new Date(start);
-      const d2 = new Date(end);
-      const diffTime = Math.abs(d2.getTime() - d1.getTime());
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-      return diffDays + 1;
   }
 
   async function loadTrips() {
@@ -147,49 +135,7 @@ import HeroAction from "../../components/ui/HeroAction.astro";
       if (tripsContainer) tripsContainer.innerHTML = '';
 
       viajes.forEach(viaje => {
-          const dias = calculateDays(viaje.fecha_inicio, viaje.fecha_fin);
-          
-          const cardHTML = `
-            <div class="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-slate-700 hover:shadow-md transition-shadow cursor-pointer relative overflow-hidden group">
-                
-                <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-ocean-400 to-ocean-600"></div>
-
-                <div class="flex justify-between items-start mb-2 pl-2">
-                    <div>
-                        <h4 class="font-bold text-ocean-900 dark:text-white text-lg leading-tight mb-1">${viaje.titulo}</h4>
-                        <div class="flex items-center text-xs text-gray-500 dark:text-slate-400 gap-1">
-                            <span class="font-medium text-ocean-600 dark:text-ocean-400">${viaje.destino}</span>
-                            <span>•</span>
-                            <span>${dias} días</span>
-                        </div>
-                    </div>
-                    ${viaje.precio ? `<span class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold px-2 py-1 rounded-lg">$${viaje.precio}</span>` : ''}
-                </div>
-
-                <div class="flex items-center gap-3 mt-4 pl-2">
-                    <div class="flex flex-col">
-                        <span class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Fecha</span>
-                        <span class="text-sm font-medium text-gray-700 dark:text-slate-300">
-                            ${formatDate(viaje.fecha_inicio)}
-                        </span>
-                    </div>
-                    
-                    <div class="h-8 w-px bg-gray-100 dark:bg-slate-700 mx-1"></div>
-
-                     <div class="flex items-center justify-center w-8 h-8 rounded-full bg-ocean-50 dark:bg-slate-700/50 text-ocean-500 dark:text-ocean-300">
-                        <span class="text-sm">✈️</span> 
-                     </div>
-                </div>
-            </div>
-          `;
-          
-          const tempDiv = document.createElement('div');
-          tempDiv.innerHTML = cardHTML;
-          const cardElement = tempDiv.firstElementChild as HTMLElement;
-          cardElement.addEventListener('click', () => {
-             console.log("Ver viaje:", viaje.id);
-          });
-
+          const cardElement = createDashboardCard(viaje);
           tripsContainer?.appendChild(cardElement);
       });
   }
