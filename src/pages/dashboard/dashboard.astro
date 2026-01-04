@@ -60,6 +60,7 @@ import HeroAction from "../../components/ui/HeroAction.astro";
 
 <script>
   import { createDashboardCard } from "../../components/ui/DashboardCard.ts";
+  import { NotificationService } from "../../utils/notifications.ts";
 
   const BASE_URL = import.meta.env.PUBLIC_API_BASE_URL || "https://travelia-backend.onrender.com/api";
 
@@ -83,6 +84,8 @@ import HeroAction from "../../components/ui/HeroAction.astro";
   }
 
   async function loadTrips() {
+      await NotificationService.requestPermissions();
+
       const token = localStorage.getItem('authToken') || getCookie('authToken');
 
       if (!token) {
@@ -112,6 +115,7 @@ import HeroAction from "../../components/ui/HeroAction.astro";
 
           renderTrips(viajes);
 
+          NotificationService.scheduleForTrips(viajes);
       } catch (error) {
           console.error("Error cargando dashboard:", error);
           showEmptyState();
