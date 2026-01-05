@@ -43,7 +43,7 @@ Prerrequisitos:
 
 1. Clonar el repositorio
 ```bash
-git clone [https://github.com/LautaRB/Travelia-Frontend.git](https://github.com/LautaRB/Travelia-Frontend.git)
+git clone https://github.com/LautaRB/TravelIA-frontend.git
 cd travelia-frontend
 ```
 
@@ -55,9 +55,9 @@ npm install
 3. Configurar variables de entorno. Crea un archivo .env en la raíz del proyecto para conectar con tu backend:
 ```bash
 # URL de tu API (Local)
-PUBLIC_API_URL=[http://127.0.0.1:8000](http://127.0.0.1:8000)
+PUBLIC_API_URL= http://127.0.0.1:8000
 # URL de tu API (Producción ej: Render):
-PUBLIC_API_URL=[https://travelia-backend.onrender.com](https://travelia-backend.onrender.com)
+PUBLIC_API_URL= https://travelia-backend.onrender.com
 ```
 
 4. Ejecutar en modo desarrollo (Web)
