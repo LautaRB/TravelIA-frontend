@@ -150,7 +150,7 @@ import Layout from "../../layouts/BaseLayout.astro";
 
     stepForm?.classList.add('hidden');
     stepLoading?.classList.remove('hidden');
-    stepLoading?.classList.add('flex'); // Asegura display flex para centrado
+    stepLoading?.classList.add('flex');
 
     try {
         const token = localStorage.getItem('authToken') || getCookie('authToken');
@@ -179,8 +179,17 @@ import Layout from "../../layouts/BaseLayout.astro";
              availableOptions = data.opciones;
         } else {
              availableOptions = [];
-             console.error("Formato de respuesta inesperado:", data);
         }
+
+        if (availableOptions.length === 0) {
+            alert("🌍 No pudimos encontrar rutas para esos destinos.\n\nPor favor, verificá que los lugares sean reales, geográficos y estén bien escritos (ej: 'Madrid' en vez de 'Narnia').");
+            
+            stepLoading?.classList.add('hidden');
+            stepLoading?.classList.remove('flex');
+            stepForm?.classList.remove('hidden'); 
+            return;
+        }
+
         renderOptions();
 
         stepLoading?.classList.add('hidden');
@@ -188,7 +197,7 @@ import Layout from "../../layouts/BaseLayout.astro";
         stepResults?.classList.remove('hidden');
 
     } catch (error: any) {
-        alert("Error: " + error.message);
+        alert("Ocurrió un error: " + error.message);
         stepLoading?.classList.add('hidden');
         stepLoading?.classList.remove('flex');
         stepForm?.classList.remove('hidden');
