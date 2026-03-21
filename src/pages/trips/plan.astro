@@ -247,7 +247,7 @@ import PlanViajeForm from "../../components/ui/PlanViajeForm.astro";
     availableOptions.forEach((opcion: any, index: number) => {
       const isSelected = selectedOptionIndex === index;
 
-      const card = createPlanOptionCard(opcion, index, isSelected, (idx) =>
+      const card = createPlanOptionCard(opcion, index, isSelected, formValues, (idx) =>
         selectOption(idx),
       );
 
