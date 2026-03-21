@@ -1,0 +1,238 @@
+---
+
+---
+
+<div class="form-container">
+  <h2>Planificá tu próximo viaje</h2>
+  <form id="plan-viaje-form">
+    <div class="input-group">
+      <label for="titulo">Nombre del Viaje</label>
+      <input
+        type="text"
+        id="titulo"
+        name="titulo"
+        placeholder="Ej: Eurotrip 2025"
+        autocomplete="off"
+        required
+      />
+    </div>
+    <div class="input-group autocomplete-wrapper">
+      <label for="origen">¿Desde dónde salís?</label>
+      <input
+        type="text"
+        id="origen"
+        name="origen"
+        placeholder="Ej: Buenos Aires, Argentina"
+        autocomplete="off"
+        required
+      />
+      <ul id="lista-origen" class="autocomplete-list"></ul>
+    </div>
+
+    <div class="input-group autocomplete-wrapper">
+      <label for="destino">¿A dónde querés ir?</label>
+      <input
+        type="text"
+        id="destino"
+        name="destino"
+        placeholder="Ej: Mendoza, Argentina"
+        autocomplete="off"
+        required
+      />
+      <ul id="lista-destino" class="autocomplete-list"></ul>
+    </div>
+
+    <div class="row">
+      <div class="input-group">
+        <label for="fecha_inicio">Fecha de Ida</label>
+        <input type="date" id="fecha_inicio" required />
+      </div>
+      <div class="input-group">
+        <label for="fecha_fin">Fecha de Vuelta</label>
+        <input type="date" id="fecha_fin" required />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="input-group">
+        <label for="cantidad_personas">Pasajeros</label>
+        <input
+          type="number"
+          id="cantidad_personas"
+          name="cantidad_personas"
+          min="1"
+          max="50"
+          value="1"
+          required
+        />
+      </div>
+      <div class="input-group">
+        <label for="medio_transporte">Medio de Transporte</label>
+        <select id="medio_transporte" name="medio_transporte" required>
+          <option value="AEREA">Avión</option>
+          <option value="TERRESTRE">Bus / Auto</option>
+          <option value="MARITIMO">Barco / Ferry</option>
+          <option value="SIN DEFINIR">Que decida la IA</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label for="motivo_viaje">Motivo del Viaje</label>
+      <select id="motivo_viaje" name="motivo_viaje" required>
+        <option value="VACACIONES">Vacaciones y Ocio</option>
+        <option value="RELAX">Descanso y Relax</option>
+        <option value="AVENTURA">Turismo Aventura</option>
+        <option value="CULTURAL">Cultural e Histórico</option>
+        <option value="LUNA_DE_MIEL">Luna de Miel / Romántico</option>
+        <option value="TRABAJO">Negocios y Trabajo</option>
+      </select>
+    </div>
+
+    <button type="submit" id="btn-submit">Generar Opciones con IA 🪄</button>
+  </form>
+</div>
+
+<style>
+  .form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: sans-serif;
+  }
+  .input-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+  .row {
+    display: flex;
+    gap: 15px;
+  }
+  .row .input-group {
+    flex: 1;
+  }
+  input,
+  select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .autocomplete-wrapper {
+    position: relative;
+  }
+  .autocomplete-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 0 0 5px 5px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  .autocomplete-list li {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+  }
+  .autocomplete-list li:hover {
+    background-color: #f0f0f0;
+  }
+
+  button {
+    padding: 12px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+  }
+  button:hover {
+    background: #0056b3;
+  }
+</style>
+
+<script>
+  interface Lugar {
+    display_name: string;
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    async function buscarLugares(query: string): Promise<Lugar[]> {
+      if (query.length < 3) return [];
+
+      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&featuretype=city`;
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error("Error buscando lugares:", error);
+        return [];
+      }
+    }
+
+    function setupAutocomplete(inputId: string, listId: string) {
+      const input = document.getElementById(inputId) as HTMLInputElement | null;
+      const list = document.getElementById(listId) as HTMLUListElement | null;
+
+      if (!input || !list) return;
+
+      let timeoutId: number | undefined;
+
+      input.addEventListener("input", (e) => {
+        const target = e.target as HTMLInputElement;
+        const valor = target.value;
+
+        clearTimeout(timeoutId);
+
+        if (valor.length < 3) {
+          list.style.display = "none";
+          return;
+        }
+
+        timeoutId = window.setTimeout(async () => {
+          const resultados = await buscarLugares(valor);
+          list.innerHTML = "";
+
+          if (resultados.length > 0) {
+            resultados.forEach((lugar: Lugar) => {
+              const li = document.createElement("li");
+              li.textContent = lugar.display_name;
+
+              li.addEventListener("click", () => {
+                input.value = lugar.display_name;
+                list.style.display = "none";
+              });
+
+              list.appendChild(li);
+            });
+            list.style.display = "block";
+          } else {
+            list.style.display = "none";
+          }
+        }, 500);
+      });
+
+      document.addEventListener("click", (e) => {
+        if (e.target !== input && e.target !== list) {
+          list.style.display = "none";
+        }
+      });
+    }
+
+    setupAutocomplete("origen", "lista-origen");
+    setupAutocomplete("destino", "lista-destino");
+  });
+</script>

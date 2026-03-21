@@ -1,94 +1,102 @@
 ---
 import Layout from "../../layouts/BaseLayout.astro";
+import PlanViajeForm from "../../components/ui/PlanViajeForm.astro";
 ---
 
 <Layout title="Nuevo Viaje - TravelIA">
-  <div class="min-h-screen bg-ocean-50 dark:bg-slate-900 relative transition-colors duration-300 pb-20">
-    
-    <header class="bg-white dark:bg-slate-800 px-6 pt-12 pb-4 shadow-sm sticky top-0 z-10 flex items-center gap-4 transition-colors">
-      <a href="/dashboard/dashboard/index.html" class="p-2 -ml-2 text-ocean-600 dark:text-ocean-400 hover:bg-ocean-50 dark:hover:bg-slate-700 rounded-full transition">
-        <svg xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+  <div
+    class="min-h-screen bg-ocean-50 dark:bg-slate-900 relative transition-colors duration-300 pb-20"
+  >
+    <header
+      class="bg-white dark:bg-slate-800 px-6 pt-12 pb-4 shadow-sm sticky top-0 z-10 flex items-center gap-4 transition-colors"
+    >
+      <a
+        href="/dashboard/dashboard/index.html"
+        class="p-2 -ml-2 text-ocean-600 dark:text-ocean-400 hover:bg-ocean-50 dark:hover:bg-slate-700 rounded-full transition"
+      >
+        <svg
+          xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15 19l-7-7 7-7"></path>
         </svg>
       </a>
-      <h1 class="text-xl font-bold text-ocean-900 dark:text-white">Planear Viaje</h1>
+      <h1 class="text-xl font-bold text-ocean-900 dark:text-white">
+        Planear Viaje
+      </h1>
     </header>
 
     <main class="p-6">
-      
       <div id="step-form">
         <div class="mb-8 text-center">
-          <div class="inline-flex items-center justify-center p-3 bg-ocean-100 dark:bg-slate-800 rounded-full mb-4">
+          <div
+            class="inline-flex items-center justify-center p-3 bg-ocean-100 dark:bg-slate-800 rounded-full mb-4"
+          >
             <span class="text-3xl">✨</span>
           </div>
-          <h2 class="text-2xl font-bold text-ocean-900 dark:text-white">¿A dónde vamos?</h2>
-          <p class="text-ocean-400 dark:text-slate-400 text-sm mt-1">Contanos tu idea y la IA armará 3 planes perfectos!</p>
+          <h2 class="text-2xl font-bold text-ocean-900 dark:text-white">
+            ¿A dónde vamos?
+          </h2>
+          <p class="text-ocean-400 dark:text-slate-400 text-sm mt-1">
+            Contanos tu idea y la IA armará 3 planes perfectos!
+          </p>
         </div>
 
-        <form id="planTripForm" class="space-y-5">
-          <div class="space-y-1">
-            <label class="text-xs font-bold text-ocean-400 dark:text-slate-400 uppercase tracking-wider ml-1">Nombre del Viaje</label>
-            <input type="text" id="titulo" placeholder="Ej: Eurotrip 2025" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-ocean-100 dark:border-slate-700 rounded-xl text-ocean-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-ocean-500 transition-colors" required />
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-1">
-              <label class="text-xs font-bold text-ocean-400 dark:text-slate-400 uppercase tracking-wider ml-1">Origen</label>
-              <input type="text" id="origen" placeholder="Madrid" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-ocean-100 dark:border-slate-700 rounded-xl text-ocean-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-ocean-500 transition-colors" required />
-            </div>
-            <div class="space-y-1">
-              <label class="text-xs font-bold text-ocean-400 dark:text-slate-400 uppercase tracking-wider ml-1">Destino</label>
-              <input type="text" id="destino" placeholder="París" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-ocean-100 dark:border-slate-700 rounded-xl text-ocean-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-ocean-500 transition-colors" required />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-1">
-              <label class="text-xs font-bold text-ocean-400 dark:text-slate-400 uppercase tracking-wider ml-1">Desde</label>
-              <input type="date" id="fecha_inicio" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-ocean-100 dark:border-slate-700 rounded-xl text-ocean-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-ocean-500 transition-colors" required />
-            </div>
-            <div class="space-y-1">
-              <label class="text-xs font-bold text-ocean-400 dark:text-slate-400 uppercase tracking-wider ml-1">Hasta</label>
-              <input type="date" id="fecha_fin" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-ocean-100 dark:border-slate-700 rounded-xl text-ocean-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-ocean-500 transition-colors" required />
-            </div>
-          </div>
-
-          <div class="pt-4">
-            <button type="submit" id="btnPlanear" class="w-full bg-gradient-to-r from-ocean-500 to-ocean-600 hover:from-ocean-600 hover:to-ocean-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-ocean-200 dark:shadow-none transform transition active:scale-[0.98] flex justify-center items-center gap-2">
-              <span id="btnText">Generar Opciones con IA</span>
-            </button>
-          </div>
-        </form>
+        <PlanViajeForm />
       </div>
-
-      <div id="step-loading" class="hidden w-full flex-col items-center justify-center py-20 text-center space-y-4">
-        <div class="relative w-20 h-20 mx-auto">
-            <div class="absolute top-0 left-0 w-full h-full border-4 border-ocean-200 rounded-full animate-pulse"></div>
-            <div class="absolute top-0 left-0 w-full h-full border-4 border-ocean-600 rounded-full border-t-transparent animate-spin"></div>
-        </div>
-        <h3 class="text-xl font-bold text-ocean-900 dark:text-white">Consultando a la IA...</h3>
-        <p class="text-ocean-400 dark:text-slate-400 text-sm max-w-xs mx-auto">La IA está diseñando 3 paquetes de viaje a medida para vos.</p>
-      </div>
-
-      <div id="step-results" class="hidden space-y-6">
-        
-        <div class="text-center">
-            <h2 class="text-2xl font-bold text-ocean-900 dark:text-white">Elige tu Aventura</h2>
-            <p class="text-ocean-400 dark:text-slate-400 text-sm">Selecciona la opción que más te guste.</p>
-        </div>
-
-        <div id="options-container" class="space-y-4">
-            </div>
-
-        <div class="pt-2 pb-10">
-            <button id="btnConfirmar" disabled class="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl shadow-lg transition-all flex justify-center items-center gap-2">
-                Selecciona una opción
-            </button>
-        </div>
-
-      </div>
-
     </main>
+
+    <div
+      id="step-loading"
+      class="hidden w-full flex-col items-center justify-center py-20 text-center space-y-4"
+    >
+      <div class="relative w-20 h-20 mx-auto">
+        <div
+          class="absolute top-0 left-0 w-full h-full border-4 border-ocean-200 rounded-full animate-pulse"
+        >
+        </div>
+        <div
+          class="absolute top-0 left-0 w-full h-full border-4 border-ocean-600 rounded-full border-t-transparent animate-spin"
+        >
+        </div>
+      </div>
+      <h3 class="text-xl font-bold text-ocean-900 dark:text-white">
+        Consultando a la IA...
+      </h3>
+      <p class="text-ocean-400 dark:text-slate-400 text-sm max-w-xs mx-auto">
+        La IA está diseñando 3 paquetes de viaje a medida para vos.
+      </p>
+    </div>
+
+    <div id="step-results" class="hidden space-y-6">
+      <div class="text-center">
+        <h2 class="text-2xl font-bold text-ocean-900 dark:text-white">
+          Elige tu Aventura
+        </h2>
+        <p class="text-ocean-400 dark:text-slate-400 text-sm">
+          Selecciona la opción que más te guste.
+        </p>
+      </div>
+
+      <div id="options-container" class="space-y-4"></div>
+
+      <div class="pt-2 pb-10">
+        <button
+          id="btnConfirmar"
+          disabled
+          class="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl shadow-lg transition-all flex justify-center items-center gap-2"
+        >
+          Selecciona una opción
+        </button>
+      </div>
+    </div>
   </div>
 </Layout>
 
@@ -98,192 +106,219 @@ import Layout from "../../layouts/BaseLayout.astro";
   const BASE_URL = import.meta.env.PUBLIC_API_BASE_URL;
 
   function getCookie(name: string): string | null {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
-      return null;
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop()?.split(";").shift() || null;
+    return null;
   }
 
   // --- VALIDACIÓN FECHAS ---
-  const fechaInicioInput = document.getElementById('fecha_inicio') as HTMLInputElement;
-  const fechaFinInput = document.getElementById('fecha_fin') as HTMLInputElement;
+  const fechaInicioInput = document.getElementById(
+    "fecha_inicio",
+  ) as HTMLInputElement;
+  const fechaFinInput = document.getElementById(
+    "fecha_fin",
+  ) as HTMLInputElement;
 
   function setupDateValidation() {
-      if (!fechaInicioInput || !fechaFinInput) return;
-      const today = new Date().toISOString().split('T')[0];
-      fechaInicioInput.min = today;
-      fechaFinInput.min = today;
+    if (!fechaInicioInput || !fechaFinInput) return;
+    const today = new Date().toISOString().split("T")[0];
+    fechaInicioInput.min = today;
+    fechaFinInput.min = today;
 
-      fechaInicioInput.addEventListener('change', function() {
-          const startDate = this.value;
-          fechaFinInput.min = startDate;
-          if (fechaFinInput.value && fechaFinInput.value < startDate) {
-              fechaFinInput.value = '';
-          }
-      });
+    fechaInicioInput.addEventListener("change", function () {
+      const startDate = this.value;
+      fechaFinInput.min = startDate;
+      if (fechaFinInput.value && fechaFinInput.value < startDate) {
+        fechaFinInput.value = "";
+      }
+    });
   }
-  setupDateValidation();
+
+  setTimeout(setupDateValidation, 100);
 
   // --- ELEMENTOS DOM ---
-  const stepForm = document.getElementById('step-form');
-  const stepLoading = document.getElementById('step-loading');
-  const stepResults = document.getElementById('step-results');
-  const form = document.getElementById('planTripForm');
-  const btnConfirmar = document.getElementById('btnConfirmar') as HTMLButtonElement;
-  const optionsContainer = document.getElementById('options-container');
+  const stepForm = document.getElementById("step-form");
+  const stepLoading = document.getElementById("step-loading");
+  const stepResults = document.getElementById("step-results");
+
+  const form = document.getElementById("plan-viaje-form");
+
+  const btnConfirmar = document.getElementById(
+    "btnConfirmar",
+  ) as HTMLButtonElement;
+  const optionsContainer = document.getElementById("options-container");
 
   // --- VARIABLES DE ESTADO ---
-  let availableOptions: any[] = []; 
+  let availableOptions: any[] = [];
   let selectedOptionIndex: number | null = null;
   let formValues: any = null;
 
-  form?.addEventListener('submit', async (e) => {
+  form?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    
+
     formValues = {
-        titulo: (document.getElementById('titulo') as HTMLInputElement).value,
-        origen: (document.getElementById('origen') as HTMLInputElement).value,
-        destino: (document.getElementById('destino') as HTMLInputElement).value,
-        fecha_inicio: fechaInicioInput.value,
-        fecha_fin: fechaFinInput.value,
+      titulo: (document.getElementById("titulo") as HTMLInputElement).value,
+      origen: (document.getElementById("origen") as HTMLInputElement).value,
+      destino: (document.getElementById("destino") as HTMLInputElement).value,
+      fecha_inicio: fechaInicioInput.value,
+      fecha_fin: fechaFinInput.value,
+      rango_fechas: `${fechaInicioInput.value} - ${fechaFinInput.value}`, // Formato "YYYY-MM-DD - YYYY-MM-DD"
+      cantidad_personas: parseInt(
+        (document.getElementById("cantidad_personas") as HTMLInputElement)
+          .value,
+      ),
+      medio_transporte: (
+        document.getElementById("medio_transporte") as HTMLSelectElement
+      ).value,
+      motivo_viaje: (
+        document.getElementById("motivo_viaje") as HTMLSelectElement
+      ).value,
     };
 
-    stepForm?.classList.add('hidden');
-    stepLoading?.classList.remove('hidden');
-    stepLoading?.classList.add('flex');
+    stepForm?.classList.add("hidden");
+    stepLoading?.classList.remove("hidden");
+    stepLoading?.classList.add("flex");
 
     try {
-        const token = localStorage.getItem('authToken') || getCookie('authToken');
-        
-        const response = await fetch(`${BASE_URL}/viajes/planificar/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                origen: formValues.origen,
-                destino: formValues.destino,
-                fecha_inicio: formValues.fecha_inicio,
-                fecha_fin: formValues.fecha_fin
-            })
-        });
+      const token = localStorage.getItem("authToken") || getCookie("authToken");
 
-        const data = await response.json();
+      // PETICIÓN A LA IA
+      const response = await fetch(`${BASE_URL}/viajes/planificar/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          origen: formValues.origen,
+          destino: formValues.destino,
+          rango_fechas: formValues.rango_fechas,
+          cantidad_personas: formValues.cantidad_personas,
+          medio_transporte: formValues.medio_transporte,
+          motivo_viaje: formValues.motivo_viaje,
+        }),
+      });
 
-        if (!response.ok) throw new Error(data.message || "Error al planificar");
+      const data = await response.json();
 
-        if (data.opciones && data.opciones.opciones && Array.isArray(data.opciones.opciones)) {
-             availableOptions = data.opciones.opciones;
-        } else if (Array.isArray(data.opciones)) {
-             availableOptions = data.opciones;
-        } else {
-             availableOptions = [];
-        }
+      if (!response.ok) throw new Error(data.message || "Error al planificar");
 
-        if (availableOptions.length === 0) {
-            alert("🌍 No pudimos encontrar rutas para esos destinos.\n\nPor favor, verificá que los lugares sean reales, geográficos y estén bien escritos (ej: 'Madrid' en vez de 'Narnia').");
-            
-            stepLoading?.classList.add('hidden');
-            stepLoading?.classList.remove('flex');
-            stepForm?.classList.remove('hidden'); 
-            return;
-        }
+      if (
+        data.opciones &&
+        data.opciones.opciones &&
+        Array.isArray(data.opciones.opciones)
+      ) {
+        availableOptions = data.opciones.opciones;
+      } else if (Array.isArray(data.opciones)) {
+        availableOptions = data.opciones;
+      } else {
+        availableOptions = [];
+      }
 
-        renderOptions();
+      if (availableOptions.length === 0) {
+        alert(
+          "🌍 No pudimos encontrar rutas para esos destinos.\n\nPor favor, verificá que los lugares sean reales, geográficos y estén bien escritos (ej: 'Madrid' en vez de 'Narnia').",
+        );
 
-        stepLoading?.classList.add('hidden');
-        stepLoading?.classList.remove('flex');
-        stepResults?.classList.remove('hidden');
+        stepLoading?.classList.add("hidden");
+        stepLoading?.classList.remove("flex");
+        stepForm?.classList.remove("hidden");
+        return;
+      }
 
+      renderOptions();
+
+      stepLoading?.classList.add("hidden");
+      stepLoading?.classList.remove("flex");
+      stepResults?.classList.remove("hidden");
     } catch (error: any) {
-        alert("Ocurrió un error: " + error.message);
-        stepLoading?.classList.add('hidden');
-        stepLoading?.classList.remove('flex');
-        stepForm?.classList.remove('hidden');
+      alert("Ocurrió un error: " + error.message);
+      stepLoading?.classList.add("hidden");
+      stepLoading?.classList.remove("flex");
+      stepForm?.classList.remove("hidden");
     }
   });
 
   function renderOptions() {
-      if (!optionsContainer) return;
-      optionsContainer.innerHTML = '';
+    if (!optionsContainer) return;
+    optionsContainer.innerHTML = "";
 
-      availableOptions.forEach((opcion: any, index: number) => {
-          const isSelected = selectedOptionIndex === index;
-          
-          const card = createPlanOptionCard(
-              opcion, 
-              index, 
-              isSelected, 
-              (idx) => selectOption(idx)
-          );
-          
-          optionsContainer.appendChild(card);
-      });
+    availableOptions.forEach((opcion: any, index: number) => {
+      const isSelected = selectedOptionIndex === index;
 
-      updateConfirmButton();
+      const card = createPlanOptionCard(opcion, index, isSelected, (idx) =>
+        selectOption(idx),
+      );
+
+      optionsContainer.appendChild(card);
+    });
+
+    updateConfirmButton();
   }
 
   function selectOption(index: number) {
-      selectedOptionIndex = index;
-      renderOptions();
+    selectedOptionIndex = index;
+    renderOptions();
   }
 
   function updateConfirmButton() {
-      if (selectedOptionIndex !== null) {
-          btnConfirmar.disabled = false;
-          btnConfirmar.innerHTML = "Confirmar Opción y Guardar";
-          btnConfirmar.classList.remove('bg-gray-300');
-          btnConfirmar.classList.add('bg-green-600');
-      } else {
-          btnConfirmar.disabled = true;
-          btnConfirmar.innerHTML = "Selecciona una opción";
-      }
+    if (selectedOptionIndex !== null) {
+      btnConfirmar.disabled = false;
+      btnConfirmar.innerHTML = "Confirmar Opción y Guardar";
+      btnConfirmar.classList.remove("bg-gray-300");
+      btnConfirmar.classList.add("bg-green-600");
+    } else {
+      btnConfirmar.disabled = true;
+      btnConfirmar.innerHTML = "Selecciona una opción";
+    }
   }
 
-  btnConfirmar.addEventListener('click', async () => {
-      if (selectedOptionIndex === null) return;
-      
-      const opcionElegida = availableOptions[selectedOptionIndex];
+  btnConfirmar.addEventListener("click", async () => {
+    if (selectedOptionIndex === null) return;
 
-      const payload = {
-          titulo: formValues.titulo,
-          origen: formValues.origen,
-          destino: formValues.destino,
-          fecha_inicio: formValues.fecha_inicio,
-          fecha_fin: formValues.fecha_fin,
-          ruta_data: opcionElegida.ruta,
-          medio_data: opcionElegida.medio
-      };
+    const opcionElegida = availableOptions[selectedOptionIndex];
 
-      const originalText = btnConfirmar.innerHTML;
-      btnConfirmar.disabled = true;
-      btnConfirmar.innerHTML = `<span class="animate-spin mr-2">⏳</span> Guardando...`;
+    //GUARDADO EN LA BASE DE DATOS
+    const payload = {
+      titulo: formValues.titulo,
+      origen: formValues.origen,
+      destino: formValues.destino,
+      rango_fechas: formValues.rango_fechas,
+      cantidad_personas: formValues.cantidad_personas,
+      motivo_viaje: formValues.motivo_viaje,
+      ruta_data: opcionElegida.ruta,
+      medio_data: opcionElegida.medio,
+      alojamiento_data: opcionElegida.alojamiento,
+    };
 
-      try {
-          const token = localStorage.getItem('authToken') || getCookie('authToken');
-          
-          const response = await fetch(`${BASE_URL}/viajes/`, {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${token}`
-              },
-              body: JSON.stringify(payload)
-          });
+    const originalText = btnConfirmar.innerHTML;
+    btnConfirmar.disabled = true;
+    btnConfirmar.innerHTML = `<span class="animate-spin mr-2">⏳</span> Guardando...`;
 
-          const result = await response.json();
+    try {
+      const token = localStorage.getItem("authToken") || getCookie("authToken");
 
-          if (!response.ok) throw new Error(result.message || "Error al guardar");
+      const response = await fetch(`${BASE_URL}/viajes/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
 
-          alert("¡Viaje guardado correctamente! ✈️");
-          window.location.href = "/dashboard/dashboard/index.html";
+      const result = await response.json();
 
-      } catch (error: any) {
-          console.error(error);
-          alert("Error: " + error.message);
-          btnConfirmar.disabled = false;
-          btnConfirmar.innerHTML = originalText;
-      }
+      if (!response.ok) throw new Error(result.message || "Error al guardar");
+
+      alert("¡Viaje guardado correctamente! ✈️");
+      window.location.href = "/dashboard/dashboard/index.html";
+    } catch (error: any) {
+      console.error(error);
+      alert("Error: " + error.message);
+      btnConfirmar.disabled = false;
+      btnConfirmar.innerHTML = originalText;
+    }
   });
 </script>
