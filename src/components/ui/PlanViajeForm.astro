@@ -42,13 +42,12 @@
       <ul id="lista-destino" class="autocomplete-list"></ul>
     </div>
 
-    <div class="row">
-      <div class="input-group">
-        <label for="fecha_inicio">Fecha de Ida</label>
+    <div class="input-group">
+      <label>¿Cuándo viajamos?</label>
+      <div class="fechas-wrapper">
+        <span class="fecha-label">Viaje entre</span>
         <input type="date" id="fecha_inicio" required />
-      </div>
-      <div class="input-group">
-        <label for="fecha_fin">Fecha de Vuelta</label>
+        <span class="fecha-label">y</span>
         <input type="date" id="fecha_fin" required />
       </div>
     </div>
@@ -160,6 +159,45 @@
   }
   button:hover {
     background: #0056b3;
+  }
+
+  .fechas-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: white;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  .fechas-wrapper input {
+    border: none;
+    padding: 5px;
+    flex: 1;
+    background: transparent;
+    outline: none;
+  }
+  .fecha-label {
+    color: #555;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+
+  :global(.dark) input,
+  :global(.dark) select {
+    background-color: #1e293b;
+    color: #f8fafc;
+    border-color: #475569;
+    color-scheme: dark;
+  }
+
+  :global(.dark) .fechas-wrapper {
+    background-color: #1e293b;
+    border-color: #475569;
+  }
+
+  :global(.dark) .fecha-label {
+    color: #cbd5e1;
   }
 </style>
 

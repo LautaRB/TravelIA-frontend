@@ -12,7 +12,7 @@ export function createPlanOptionCard(
         : 'border-gray-100 dark:border-slate-700 hover:border-ocean-300';
 
     card.className = `relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 bg-white dark:bg-slate-800 shadow-sm ${borderClass}`;
-    
+    const precioTotal = opcion.precio_estimado || opcion.costo_estimado || opcion.presupuesto_total || (opcion.medio && opcion.medio.precio) || '---';
     card.innerHTML = `
         ${isSelected ? '<div class="absolute -top-3 -right-3 bg-ocean-500 text-white rounded-full p-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>' : ''}
         
@@ -33,7 +33,7 @@ export function createPlanOptionCard(
 
         <div class="flex justify-between items-end border-t border-gray-100 dark:border-slate-700 pt-3">
             <span class="text-xs font-bold uppercase text-ocean-400 tracking-wider">Precio Est.</span>
-            <span class="text-xl font-bold text-ocean-600 dark:text-ocean-400">$${opcion.medio.precio}</span>
+            <span class="text-xl font-bold text-ocean-600 dark:text-ocean-400">$${precioTotal}</span>
         </div>
     `;
 

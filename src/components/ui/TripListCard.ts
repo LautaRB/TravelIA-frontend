@@ -4,7 +4,18 @@ export function createTripListCard(
     viaje: any, 
     onDelete: (id: number, element: HTMLElement) => void
 ): HTMLElement {
-    const dias = calculateDays(viaje.fecha_inicio, viaje.fecha_fin);
+    let fInicio = viaje.fecha_inicio;
+    let fFin = viaje.fecha_fin;
+
+    if (!fInicio && viaje.rango_fechas) {
+        const partes = viaje.rango_fechas.split(' - ');
+        if (partes.length === 2) {
+            fInicio = partes[0].trim();
+            fFin = partes[1].trim();
+        }
+    }
+
+    const dias = (fInicio && fFin) ? calculateDays(fInicio, fFin) : '-';
     
     const tempDiv = document.createElement('div');
     

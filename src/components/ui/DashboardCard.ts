@@ -1,7 +1,18 @@
 import { formatDate, calculateDays } from "../../utils/formatters.ts";
 
 export function createDashboardCard(viaje: any): HTMLElement {
-    const dias = calculateDays(viaje.fecha_inicio, viaje.fecha_fin);
+    let fInicio = viaje.fecha_inicio;
+    let fFin = viaje.fecha_fin;
+
+    if (!fInicio && viaje.rango_fechas) {
+        const partes = viaje.rango_fechas.split(' - ');
+        if (partes.length === 2) {
+            fInicio = partes[0].trim();
+            fFin = partes[1].trim();
+        }
+    }
+
+    const dias = (fInicio && fFin) ? calculateDays(fInicio, fFin) : '-';
     
     const tempDiv = document.createElement('div');
     
@@ -26,7 +37,7 @@ export function createDashboardCard(viaje: any): HTMLElement {
               <div class="flex flex-col">
                   <span class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Fecha</span>
                   <span class="text-sm font-medium text-gray-700 dark:text-slate-300">
-                      ${formatDate(viaje.fecha_inicio)}
+                      ${fInicio ? formatDate(fInicio) : 'Fecha a definir'}
                   </span>
               </div>
               
