@@ -44,11 +44,15 @@
 
     <div class="input-group">
       <label>¿Cuándo viajamos?</label>
-      <div class="fechas-wrapper">
-        <span class="fecha-label">Viaje entre</span>
-        <input type="date" id="fecha_inicio" required />
-        <span class="fecha-label">y</span>
-        <input type="date" id="fecha_fin" required />
+      <div class="fechas-grid">
+        <div class="fecha-caja">
+          <span class="fecha-sublabel">Salida 🛫</span>
+          <input type="date" id="fecha_inicio" required />
+        </div>
+        <div class="fecha-caja">
+          <span class="fecha-sublabel">Regreso 🛬</span>
+          <input type="date" id="fecha_fin" required />
+        </div>
       </div>
     </div>
 
@@ -111,93 +115,165 @@
   .row .input-group {
     flex: 1;
   }
-  input,
-  select {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+  input, select {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background-color: #f8fafc;
+    color: #1e293b;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    outline: none;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  }
+  
+  input:focus, select:focus {
+    border-color: #0ea5e9;
+    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
+    background-color: #ffffff;
   }
 
+  /* === MODO OSCURO (GLOBAL) === */
+  :global(.dark) input,
+  :global(.dark) select {
+    background-color: #1e293b;
+    border-color: #334155;
+    color: #f8fafc;
+    color-scheme: dark;
+  }
+  :global(.dark) input:focus,
+  :global(.dark) select:focus {
+    border-color: #0ea5e9;
+    background-color: #0f172a;
+  }
+
+  /* === GRILLA DE FECHAS === */
+  .fechas-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 4px;
+  }
+  .fecha-caja {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: #f8fafc;
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+  }
+  .fecha-caja:focus-within {
+    border-color: #0ea5e9;
+    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
+    background-color: #ffffff;
+  }
+  .fecha-sublabel {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .fecha-caja input {
+    border: none;
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+    height: 24px;
+  }
+  .fecha-caja input:focus {
+    box-shadow: none;
+  }
+
+  :global(.dark) .fecha-caja {
+    background-color: #1e293b;
+    border-color: #334155;
+  }
+  :global(.dark) .fecha-caja:focus-within {
+    background-color: #0f172a;
+  }
+  :global(.dark) .fecha-sublabel {
+    color: #94a3b8;
+  }
+
+  /* === LISTA DE AUTOCOMPLETADO === */
   .autocomplete-wrapper {
     position: relative;
   }
   .autocomplete-list {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 8px);
     left: 0;
     right: 0;
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 0 0 5px 5px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
     margin: 0;
-    padding: 0;
+    padding: 6px;
     list-style: none;
-    max-height: 200px;
+    max-height: 220px;
     overflow-y: auto;
     z-index: 1000;
     display: none;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
   }
   .autocomplete-list li {
-    padding: 10px;
+    padding: 12px 16px;
     cursor: pointer;
-    border-bottom: 1px solid #eee;
-  }
-  .autocomplete-list li:hover {
-    background-color: #f0f0f0;
-  }
-
-  button {
-    padding: 12px;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    width: 100%;
-  }
-  button:hover {
-    background: #0056b3;
-  }
-
-  .fechas-wrapper {
+    border-radius: 8px;
     display: flex;
     align-items: center;
-    gap: 10px;
-    background: white;
-    padding: 5px 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  .fechas-wrapper input {
-    border: none;
-    padding: 5px;
-    flex: 1;
-    background: transparent;
-    outline: none;
-  }
-  .fecha-label {
-    color: #555;
+    gap: 12px;
+    color: #334155;
     font-weight: 500;
-    font-size: 0.95rem;
+    transition: background-color 0.15s ease;
+    margin-bottom: 2px;
+  }
+  .autocomplete-list li::before {
+    content: "📍";
+    font-size: 1.2rem;
+    opacity: 0.8;
+  }
+  .autocomplete-list li:hover {
+    background-color: #f1f5f9;
+    color: #0ea5e9;
   }
 
-  :global(.dark) input,
-  :global(.dark) select {
+  :global(.dark) .autocomplete-list {
     background-color: #1e293b;
-    color: #f8fafc;
-    border-color: #475569;
-    color-scheme: dark;
+    border-color: #334155;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  }
+  :global(.dark) .autocomplete-list li {
+    color: #e2e8f0;
+  }
+  :global(.dark) .autocomplete-list li:hover {
+    background-color: #334155;
+    color: #38bdf8;
   }
 
-  :global(.dark) .fechas-wrapper {
-    background-color: #1e293b;
-    border-color: #475569;
+  /* === BOTÓN SUBMIT === */
+  button[type="submit"] {
+    margin-top: 10px;
+    padding: 16px;
+    background: #0ea5e9;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.1rem;
+    width: 100%;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.2);
   }
-
-  :global(.dark) .fecha-label {
-    color: #cbd5e1;
+  button[type="submit"]:hover {
+    background: #0284c7;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px -1px rgba(14, 165, 233, 0.3);
   }
 </style>
 
