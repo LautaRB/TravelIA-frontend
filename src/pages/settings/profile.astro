@@ -174,7 +174,7 @@ import Layout from "../../layouts/BaseLayout.astro";
     import { Capacitor } from "@capacitor/core";
     import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
     import { logout, getProfile } from "../../services/api/authAPI";
-    import { LocalNotifications } from '@capacitor/local-notifications';
+    import { LocalNotifications } from "@capacitor/local-notifications";
 
     function getCookie(name: string): string | null {
       const value = `; ${document.cookie}`;
@@ -193,7 +193,7 @@ import Layout from "../../layouts/BaseLayout.astro";
         const nameEl = document.getElementById("profile-name");
         const emailEl = document.getElementById("profile-email");
         const imgEl = document.getElementById(
-          "profile-image"
+          "profile-image",
         ) as HTMLImageElement;
 
         if (nameEl && user.username) {
@@ -236,16 +236,21 @@ import Layout from "../../layouts/BaseLayout.astro";
     if (logoutBtn) {
       logoutBtn.addEventListener("click", async () => {
         logoutBtn.innerHTML = `<span class="animate-pulse">Cerrando sesión...</span>`;
-
         (logoutBtn as HTMLButtonElement).disabled = true;
 
         const accessToken = getCookie("authToken");
         const refreshToken = getCookie("refreshToken");
 
-        if (accessToken && refreshToken) {
-          console.log("Cerrando sesión en servidor...");
-
-          await logout(accessToken, refreshToken);
+        try {
+          if (accessToken && refreshToken) {
+            console.log("Cerrando sesión en servidor...");
+            await logout(accessToken, refreshToken);
+          }
+        } catch (e) {
+          console.warn(
+            "Fallo al desloguear en el backend, forzando logout local.",
+            e,
+          );
         }
 
         if (Capacitor.isNativePlatform()) {
@@ -253,12 +258,9 @@ import Layout from "../../layouts/BaseLayout.astro";
             GoogleAuth.initialize({
               clientId:
                 "360414482088-rtp2h0ao33g08ovo4fa2q6rk0c2n1aos.apps.googleusercontent.com",
-
               scopes: ["profile", "email"],
-
               grantOfflineAccess: true,
             });
-
             await GoogleAuth.signOut();
           } catch (e) {
             console.error("Error logout nativo:", e);
@@ -267,16 +269,21 @@ import Layout from "../../layouts/BaseLayout.astro";
 
         document.cookie =
           "authToken=; path=/; max-age=0; secure; samesite=strict";
-
         document.cookie =
           "refreshToken=; path=/; max-age=0; secure; samesite=strict";
-
         localStorage.removeItem("authToken");
         localStorage.removeItem("refreshToken");
 
-        await LocalNotifications.cancel(await LocalNotifications.getPending());
+        try {
+          const pending = await LocalNotifications.getPending();
+          if (pending.notifications && pending.notifications.length > 0) {
+            await LocalNotifications.cancel(pending);
+          }
+        } catch (e) {
+          console.warn("No se pudieron limpiar las notificaciones:", e);
+        }
 
-        window.location.href = "/login/index.html";
+        window.location.replace("/login/index.html");
       });
     }
   </script>
