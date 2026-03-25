@@ -153,6 +153,7 @@ import PlanViajeForm from "../../components/ui/PlanViajeForm.astro";
   let availableOptions: any[] = [];
   let selectedOptionIndex: number | null = null;
   let formValues: any = null;
+  let viajeItinerario: any[] = [];
 
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -215,6 +216,8 @@ import PlanViajeForm from "../../components/ui/PlanViajeForm.astro";
       } else {
         availableOptions = [];
       }
+
+      viajeItinerario = data.itinerario || (data.opciones && data.opciones.itinerario) || [];
 
       if (availableOptions.length === 0) {
         alert(
@@ -292,6 +295,7 @@ import PlanViajeForm from "../../components/ui/PlanViajeForm.astro";
       ruta_data: opcionElegida.ruta,
       medio_data: opcionElegida.medio,
       alojamiento_data: opcionElegida.alojamiento,
+      itinerario: viajeItinerario,
     };
 
     const originalText = btnConfirmar.innerHTML;
