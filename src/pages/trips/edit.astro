@@ -3,141 +3,366 @@ import Layout from "../../layouts/BaseLayout.astro";
 ---
 
 <Layout title="Editar Viaje">
-  <div class="min-h-screen bg-ocean-50 dark:bg-slate-900 pb-24 transition-colors">
-    
-    <header class="bg-white dark:bg-slate-800 shadow-sm sticky top-0 z-10 px-4 py-3 flex items-center gap-3">
-        <button id="cancel-btn" class="text-sm font-medium text-gray-500 hover:text-gray-700">Cancelar</button>
-        <h1 class="flex-1 text-center text-lg font-bold text-ocean-900 dark:text-white">Editar Viaje</h1>
-        <button id="save-btn" class="text-sm font-bold text-ocean-600 hover:text-ocean-700">Guardar</button>
+  <div
+    class="min-h-screen bg-ocean-50 dark:bg-slate-900 pb-24 transition-colors"
+  >
+    <header
+      class="bg-white dark:bg-slate-800 shadow-sm sticky top-0 z-10 px-4 py-3 flex items-center gap-3"
+    >
+      <button
+        id="cancel-btn"
+        class="text-sm font-medium text-gray-500 hover:text-gray-700"
+        >Cancelar</button
+      >
+      <h1
+        class="flex-1 text-center text-lg font-bold text-ocean-900 dark:text-white"
+      >
+        Editar Viaje
+      </h1>
+      <button
+        id="save-btn"
+        class="text-sm font-bold text-ocean-600 hover:text-ocean-700"
+        >Guardar</button
+      >
     </header>
 
-    <main class="px-6 mt-6">
-        <form id="edit-form" class="space-y-5">
-            
-            <div class="flex flex-col gap-1">
-                <label class="text-xs font-bold text-ocean-700 uppercase">Título del Viaje</label>
-                <input type="text" id="titulo" name="titulo" class="w-full p-3 rounded-xl border border-gray-200 focus:border-ocean-500 focus:ring-1 focus:ring-ocean-500 outline-none transition dark:bg-slate-800 dark:border-slate-600 dark:text-white" required />
-            </div>
+    <main class="px-6 mt-6 pb-24">
+      <form id="edit-form" class="space-y-5">
+        <div class="flex flex-col gap-1">
+          <label class="text-xs font-bold text-ocean-700 uppercase"
+            >Título del Viaje</label
+          >
+          <input
+            type="text"
+            id="titulo"
+            name="titulo"
+            class="w-full p-3 rounded-xl border border-gray-200 focus:border-ocean-500 focus:ring-1 focus:ring-ocean-500 outline-none transition dark:bg-slate-800 dark:border-slate-600 dark:text-white"
+            required
+          />
+        </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <div class="flex flex-col gap-1">
-                    <label class="text-xs font-bold text-ocean-700 uppercase">Inicio</label>
-                    <input type="date" id="fecha_inicio" name="fecha_inicio" class="w-full p-3 rounded-xl border border-gray-200 dark:bg-slate-800 dark:border-slate-600 dark:text-white" required />
-                </div>
-                <div class="flex flex-col gap-1">
-                    <label class="text-xs font-bold text-ocean-700 uppercase">Fin</label>
-                    <input type="date" id="fecha_fin" name="fecha_fin" class="w-full p-3 rounded-xl border border-gray-200 dark:bg-slate-800 dark:border-slate-600 dark:text-white" required />
-                </div>
-            </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-bold text-ocean-700 uppercase"
+              >Inicio</label
+            >
+            <input
+              type="date"
+              id="fecha_inicio"
+              name="fecha_inicio"
+              class="w-full p-3 rounded-xl border border-gray-200 dark:bg-slate-800 dark:border-slate-600 dark:text-white"
+              required
+            />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-bold text-ocean-700 uppercase">Fin</label
+            >
+            <input
+              type="date"
+              id="fecha_fin"
+              name="fecha_fin"
+              class="w-full p-3 rounded-xl border border-gray-200 dark:bg-slate-800 dark:border-slate-600 dark:text-white"
+              required
+            />
+          </div>
+        </div>
 
-            <div class="flex flex-col gap-1">
-                <label class="text-xs font-bold text-ocean-700 uppercase">Origen</label>
-                <input type="text" id="origen" name="origen" class="w-full p-3 rounded-xl border border-gray-200 dark:bg-slate-800 dark:border-slate-600 dark:text-white" required />
-            </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-xs font-bold text-ocean-700 uppercase"
+            >Origen</label
+          >
+          <input
+            type="text"
+            id="origen"
+            name="origen"
+            class="w-full p-3 rounded-xl border border-gray-200 dark:bg-slate-800 dark:border-slate-600 dark:text-white"
+            required
+          />
+        </div>
 
-             <div class="flex flex-col gap-1">
-                <label class="text-xs font-bold text-ocean-700 uppercase">Destino</label>
-                <input type="text" id="destino" name="destino" class="w-full p-3 rounded-xl border border-gray-200 dark:bg-slate-800 dark:border-slate-600 dark:text-white" required />
-            </div>
-        </form>
+        <div class="flex flex-col gap-1">
+          <label class="text-xs font-bold text-ocean-700 uppercase"
+            >Destino</label
+          >
+          <input
+            type="text"
+            id="destino"
+            name="destino"
+            class="w-full p-3 rounded-xl border border-gray-200 dark:bg-slate-800 dark:border-slate-600 dark:text-white"
+            required
+          />
+        </div>
+
+        <button
+          type="button"
+          id="btn-recalcular"
+          class="w-full mt-4 bg-ocean-600 hover:bg-ocean-700 text-white font-bold py-4 rounded-xl shadow-md transition-all active:scale-[0.98] flex justify-center items-center gap-2"
+        >
+          <span>✨</span> Re-calcular Opciones con IA
+        </button>
+      </form>
+
+      <div
+        id="loading-ia"
+        class="hidden flex-col items-center justify-center py-12"
+      >
+        <div
+          class="w-12 h-12 border-4 border-ocean-200 border-t-ocean-600 rounded-full animate-spin mb-4"
+        >
+        </div>
+        <p class="text-ocean-800 dark:text-ocean-300 font-bold animate-pulse">
+          Armando nuevas rutas...
+        </p>
+      </div>
+
+      <div id="opciones-container" class="hidden mt-8 space-y-6">
+        <h2
+          class="text-xl font-bold text-ocean-900 dark:text-white text-center"
+        >
+          Nuevas Opciones Disponibles
+        </h2>
+        <div id="opciones-grid" class="flex flex-col gap-4"></div>
+
+        <button
+          type="button"
+          id="btn-guardar-final"
+          class="hidden w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl shadow-md transition-all active:scale-[0.98]"
+        >
+          Guardar Nuevo Plan
+        </button>
+      </div>
     </main>
   </div>
 </Layout>
 
 <script>
-  const BASE_URL = import.meta.env.PUBLIC_API_BASE_URL || "https://travelia-backend.onrender.com/api";
-  
-  const form = document.getElementById('edit-form') as HTMLFormElement;
-  const saveBtn = document.getElementById('save-btn') as HTMLButtonElement;
-  const cancelBtn = document.getElementById('cancel-btn');
+  import { createPlanOptionCard } from "../../components/ui/PlanOptionCard";
+
+  const BASE_URL =
+    import.meta.env.PUBLIC_API_BASE_URL ||
+    "https://travelia-backend.onrender.com/api";
+
+  const form = document.getElementById("edit-form") as HTMLFormElement;
+  const btnRecalcular = document.getElementById(
+    "btn-recalcular",
+  ) as HTMLButtonElement;
+  const btnGuardarFinal = document.getElementById(
+    "btn-guardar-final",
+  ) as HTMLButtonElement;
+  const loadingIa = document.getElementById("loading-ia");
+  const opcionesContainer = document.getElementById("opciones-container");
+  const opcionesGrid = document.getElementById("opciones-grid");
+  const cancelBtn = document.getElementById("cancel-btn");
+  if (document.getElementById("save-btn"))
+    document.getElementById("save-btn")!.style.display = "none";
+
   const urlParams = new URLSearchParams(window.location.search);
-  const tripId = urlParams.get('id');
-  const token = localStorage.getItem('authToken');
+  const tripId = urlParams.get("id");
+  const token = localStorage.getItem("authToken");
+
+  // Variables de estado
+  let oldTripData: any = {};
+  let availableOptions: any[] = [];
+  let viajeItinerario: any[] = [];
+  let selectedOptionIndex: number | null = null;
 
   async function loadData() {
-      if (!token || !tripId) {
-          alert("No se identificó el viaje.");
-          window.location.href = '/trips/index.html';
-          return;
+    if (!token || !tripId) {
+      window.location.href = "/trips/index.html";
+      return;
+    }
+    try {
+      const res = await fetch(`${BASE_URL}/viajes/${tripId}/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Error cargando datos");
+
+      oldTripData = await res.json();
+
+      const setVal = (id: string, val: any) => {
+        const el = document.getElementById(id) as HTMLInputElement;
+        if (el) el.value = val || "";
+      };
+
+      let fInicio = oldTripData.fecha_inicio;
+      let fFin = oldTripData.fecha_fin;
+      if (!fInicio && oldTripData.rango_fechas) {
+        const partes = oldTripData.rango_fechas.split(" - ");
+        if (partes.length === 2) {
+          fInicio = partes[0].trim();
+          fFin = partes[1].trim();
+        }
       }
 
-      try {
-          if(saveBtn) saveBtn.disabled = true;
-          
-          const res = await fetch(`${BASE_URL}/viajes/${tripId}/`, {
-              headers: { 'Authorization': `Bearer ${token}` }
-          });
-          
-          if (!res.ok) throw new Error("Error cargando datos");
-          
-          const data = await res.json();
-          
-          const setVal = (id: string, val: any) => {
-              const el = document.getElementById(id) as HTMLInputElement;
-              if(el) el.value = val || '';
-          };
-
-          setVal('titulo', data.titulo);
-          setVal('origen', data.origen);
-          setVal('destino', data.destino);
-          setVal('fecha_inicio', data.fecha_inicio);
-          setVal('fecha_fin', data.fecha_fin);
-      } catch (e) {
-          console.error(e);
-          alert("No se pudieron cargar los datos del viaje.");
-          window.location.href = '/trips/index.html';
-      } finally {
-          if(saveBtn) saveBtn.disabled = false;
-      }
+      setVal("titulo", oldTripData.titulo);
+      setVal("origen", oldTripData.origen);
+      setVal("destino", oldTripData.destino);
+      setVal("fecha_inicio", fInicio);
+      setVal("fecha_fin", fFin);
+    } catch (e) {
+      console.error(e);
+      alert("No se pudieron cargar los datos del viaje.");
+    }
   }
 
-  async function saveChanges(e: Event) {
-      e.preventDefault();
+  async function generarNuevasOpciones() {
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
 
-      if (!form.checkValidity()) {
-          form.reportValidity();
-          return;
+    form.classList.add("hidden");
+    loadingIa?.classList.remove("hidden");
+    loadingIa?.classList.add("flex");
+
+    const titulo = (document.getElementById("titulo") as HTMLInputElement)
+      .value;
+    const origen = (document.getElementById("origen") as HTMLInputElement)
+      .value;
+    const destino = (document.getElementById("destino") as HTMLInputElement)
+      .value;
+    const fecha_inicio = (
+      document.getElementById("fecha_inicio") as HTMLInputElement
+    ).value;
+    const fecha_fin = (document.getElementById("fecha_fin") as HTMLInputElement)
+      .value;
+
+    const aiPayload = {
+      origen,
+      destino,
+      rango_fechas: `${fecha_inicio} - ${fecha_fin}`,
+      cantidad_personas: oldTripData.cantidad_personas || 1,
+      medio_transporte: "SIN DEFINIR", 
+      motivo_viaje: "VACACIONES",
+    };
+
+    try {
+      const response = await fetch(`${BASE_URL}/viajes/planificar/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(aiPayload),
+      });
+
+      if (!response.ok) throw new Error("Fallo en la IA");
+
+      const data = await response.json();
+
+      if (
+        data.opciones &&
+        data.opciones.opciones &&
+        Array.isArray(data.opciones.opciones)
+      ) {
+        availableOptions = data.opciones.opciones;
+      } else if (Array.isArray(data.opciones)) {
+        availableOptions = data.opciones;
       }
 
-      const originalText = saveBtn.innerText;
-      saveBtn.innerText = "Actualizando itinerario...";
-      saveBtn.disabled = true;
-      saveBtn.classList.add('opacity-75', 'cursor-not-allowed');
+      viajeItinerario =
+        data.itinerario || (data.opciones && data.opciones.itinerario) || [];
 
-      const formData = new FormData(form);
-      const payload = Object.fromEntries(formData.entries());
+      loadingIa?.classList.remove("flex");
+      loadingIa?.classList.add("hidden");
 
-      try {
-          const res = await fetch(`${BASE_URL}/viajes/${tripId}/`, {
-              method: 'PATCH',
-              headers: { 
-                  'Authorization': `Bearer ${token}`,
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(payload)
-          });
+      renderOptions();
+      opcionesContainer?.classList.remove("hidden");
+    } catch (error) {
+      console.error(error);
+      alert("Hubo un error al re-calcular el viaje. Intenta de nuevo.");
+      loadingIa?.classList.remove("flex");
+      loadingIa?.classList.add("hidden");
+      form.classList.remove("hidden");
+    }
+  }
 
-          const json = await res.json();
+  function renderOptions() {
+    if (!opcionesGrid) return;
+    opcionesGrid.innerHTML = "";
 
-          if (res.ok) {
-              window.location.replace(`/trips/detail/index.html?id=${tripId}`); 
-          } else {
-              alert(json.message || json.detail || "No se pudo actualizar el viaje. Intenta nuevamente.");
-          }
+    const formValues = {
+      origen: (document.getElementById("origen") as HTMLInputElement).value,
+      destino: (document.getElementById("destino") as HTMLInputElement).value,
+      fecha_inicio: (
+        document.getElementById("fecha_inicio") as HTMLInputElement
+      ).value,
+      fecha_fin: (document.getElementById("fecha_fin") as HTMLInputElement)
+        .value,
+    };
 
-      } catch (error) {
-          console.error(error);
-          alert("Error de conexión con el servidor.");
-      } finally {
-          saveBtn.innerText = originalText;
-          saveBtn.disabled = false;
-          saveBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+    availableOptions.forEach((opcion, index) => {
+      const isSelected = selectedOptionIndex === index;
+      const card = createPlanOptionCard(
+        opcion,
+        index,
+        isSelected,
+        formValues,
+        (idx) => {
+          selectedOptionIndex = idx;
+          renderOptions();
+          btnGuardarFinal.classList.remove("hidden");
+        },
+      );
+      opcionesGrid.appendChild(card);
+    });
+  }
+
+  async function guardarCambiosFinales() {
+    if (selectedOptionIndex === null) return;
+
+    const originalText = btnGuardarFinal.innerText;
+    btnGuardarFinal.innerText = "Guardando en la base de datos...";
+    btnGuardarFinal.disabled = true;
+
+    const opcionElegida = availableOptions[selectedOptionIndex];
+    const fInicio = (
+      document.getElementById("fecha_inicio") as HTMLInputElement
+    ).value;
+    const fFin = (document.getElementById("fecha_fin") as HTMLInputElement)
+      .value;
+
+    const patchPayload = {
+      titulo: (document.getElementById("titulo") as HTMLInputElement).value,
+      origen: (document.getElementById("origen") as HTMLInputElement).value,
+      destino: (document.getElementById("destino") as HTMLInputElement).value,
+      rango_fechas: `${fInicio} - ${fFin}`,
+      fecha_inicio: fInicio,
+      fecha_fin: fFin,
+      ruta_data: opcionElegida.ruta,
+      medio_data: opcionElegida.medio,
+      alojamiento_data: opcionElegida.alojamiento,
+      itinerario: viajeItinerario,
+    };
+
+    try {
+      const res = await fetch(`${BASE_URL}/viajes/${tripId}/`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(patchPayload),
+      });
+
+      if (res.ok) {
+        window.location.replace(`/trips/detail/index.html?id=${tripId}`);
+      } else {
+        const json = await res.json();
+        alert(json.message || "No se pudo actualizar el viaje.");
       }
+    } catch (error) {
+      console.error(error);
+      alert("Error de conexión con el servidor.");
+    } finally {
+      btnGuardarFinal.innerText = originalText;
+      btnGuardarFinal.disabled = false;
+    }
   }
 
   loadData();
 
-  saveBtn?.addEventListener('click', saveChanges);
-  cancelBtn?.addEventListener('click', () => window.history.back());
-
+  btnRecalcular?.addEventListener("click", generarNuevasOpciones);
+  btnGuardarFinal?.addEventListener("click", guardarCambiosFinales);
+  cancelBtn?.addEventListener("click", () => window.history.back());
 </script>
