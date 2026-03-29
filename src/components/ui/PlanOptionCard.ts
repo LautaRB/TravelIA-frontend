@@ -1,4 +1,4 @@
-import { buildFlightsUrl, buildAccommodationUrl } from "../../utils/linkBuilder.ts";
+import { buildFlightsUrl, buildAccommodationUrl, buildBusUrl, buildFerryUrl } from "../../utils/linkBuilder.ts";
 
 export function createPlanOptionCard(
     opcion: any, 
@@ -18,8 +18,28 @@ export function createPlanOptionCard(
     
     const precioTotal = opcion.precio_estimado || opcion.costo_estimado || opcion.presupuesto_total || (opcion.medio && opcion.medio.precio_total) || (opcion.medio && opcion.medio.precio) || 'A calcular';
 
-    const linkVuelos = buildFlightsUrl(formValues.origen, formValues.destino);
     const linkAlojamiento = buildAccommodationUrl(formValues.destino, formValues.fecha_inicio, formValues.fecha_fin);
+
+    const tipoTransporte = opcion.medio?.tipo?.toUpperCase() || 'AEREO';
+    let btnTransporteConfig = {
+        texto: '✈️ Vuelos',
+        url: buildFlightsUrl(formValues.origen, formValues.destino),
+        clases: 'bg-blue-50 hover:bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
+    };
+
+    if (tipoTransporte.includes('TERRESTRE')) {
+        btnTransporteConfig = {
+            texto: '🚌 Pasajes',
+            url: buildBusUrl(formValues.origen, formValues.destino),
+            clases: 'bg-emerald-50 hover:bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
+        };
+    } else if (tipoTransporte.includes('MARITIMO') || tipoTransporte.includes('MARÍTIMO')) {
+        btnTransporteConfig = {
+            texto: '⛴️ Ferries',
+            url: buildFerryUrl(formValues.origen, formValues.destino),
+            clases: 'bg-cyan-50 hover:bg-cyan-100 text-cyan-600 dark:bg-cyan-900/30 dark:text-cyan-400'
+        };
+    }
 
     card.innerHTML = `
         ${isSelected ? '<div class="absolute -top-3 -right-3 bg-ocean-500 text-white rounded-full p-1 z-10"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>' : ''}
@@ -34,15 +54,15 @@ export function createPlanOptionCard(
                     <span class="font-medium">${opcion.ruta.nombre}</span>
                 </div>
                 <div class="flex items-center gap-2 text-sm text-gray-700 dark:text-slate-300">
-                    <span class="text-lg">${opcion.medio.tipo === 'AEREO' ? '✈️' : '🚗'}</span>
+                    <span class="text-lg">${tipoTransporte.includes('AEREO') ? '✈️' : tipoTransporte.includes('MARITIMO') ? '⛴️' : '🚗'}</span>
                     <span class="font-medium">${opcion.medio.nombre}</span>
                 </div>
             </div>
         </div>
 
         <div class="flex gap-2 mb-4">
-            <a href="${linkVuelos}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="flex-1 text-center bg-blue-50 hover:bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 py-2 rounded-lg text-xs font-bold transition-colors">
-                ✈️ Vuelos
+            <a href="${btnTransporteConfig.url}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="flex-1 text-center ${btnTransporteConfig.clases} py-2 rounded-lg text-xs font-bold transition-colors">
+                ${btnTransporteConfig.texto}
             </a>
             <a href="${linkAlojamiento}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="flex-1 text-center bg-indigo-50 hover:bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400 py-2 rounded-lg text-xs font-bold transition-colors">
                 🏨 Hoteles

@@ -1,9 +1,22 @@
-// Google Flights
+// Vuelos (Google Flights genérico)
 export function buildFlightsUrl(origen: string, destino: string): string {
     const origenClean = encodeURIComponent(origen);
     const destinoClean = encodeURIComponent(destino);
-    
-    return `https://www.google.com/travel/flights?q=Vuelos+desde+${origenClean}+a+${destinoClean}`;
+    return `https://www.google.com/search?q=vuelos+de+${origenClean}+a+${destinoClean}&tbm=flm`;
+}
+
+// Micros / Trenes (Busbud)
+export function buildBusUrl(origen: string, destino: string): string {
+    const origenClean = encodeURIComponent(origen);
+    const destinoClean = encodeURIComponent(destino);
+    return `https://www.busbud.com/es/search?origin=${origenClean}&destination=${destinoClean}`;
+}
+
+// Ferries (DirectFerries)
+export function buildFerryUrl(origen: string, destino: string): string {
+    const origenClean = encodeURIComponent(origen);
+    const destinoClean = encodeURIComponent(destino);
+    return `https://www.rome2rio.com/es/map/${origenClean}/${destinoClean}`;
 }
 
 // Booking.com con las fechas exactas

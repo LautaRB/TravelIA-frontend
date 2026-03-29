@@ -188,6 +188,8 @@ import BottomNav from "../../components/layout/BottomNav.astro";
   import {
     buildFlightsUrl,
     buildAccommodationUrl,
+    buildBusUrl,
+    buildFerryUrl
   } from "../../utils/linkBuilder.ts";
 
   const BASE_URL =
@@ -304,15 +306,42 @@ import BottomNav from "../../components/layout/BottomNav.astro";
       }
     }
 
-    const btnVuelos = document.getElementById(
+    const btnTransporte = document.getElementById(
       "btn-buscar-vuelos",
     ) as HTMLAnchorElement;
     const btnHoteles = document.getElementById(
       "btn-buscar-hoteles",
     ) as HTMLAnchorElement;
 
-    if (btnVuelos && trip.origen && trip.destino) {
-      btnVuelos.href = buildFlightsUrl(trip.origen, trip.destino);
+    if (btnTransporte && trip.origen && trip.destino) {
+      const tipoMedio = trip.medio?.tipo?.toUpperCase() || "AEREO";
+
+      const iconSpan = btnTransporte.querySelector("span:first-child");
+      const textSpan = btnTransporte.querySelector("span:last-child");
+
+      if (tipoMedio.includes("TERRESTRE") || tipoMedio.includes("BUS")) {
+        btnTransporte.href = buildBusUrl(trip.origen, trip.destino);
+        btnTransporte.className =
+          "flex flex-col items-center justify-center bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 p-4 rounded-xl border border-emerald-100 dark:border-emerald-800 transition-colors shadow-sm";
+        if (iconSpan) iconSpan.textContent = "🚌";
+        if (textSpan) textSpan.textContent = "BUSCAR PASAJES";
+      } else if (
+        tipoMedio.includes("MARITIMO") ||
+        tipoMedio.includes("BARCO") ||
+        tipoMedio.includes("FERRY")
+      ) {
+        btnTransporte.href = buildFerryUrl(trip.origen, trip.destino);
+        btnTransporte.className =
+          "flex flex-col items-center justify-center bg-cyan-50 hover:bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 p-4 rounded-xl border border-cyan-100 dark:border-cyan-800 transition-colors shadow-sm";
+        if (iconSpan) iconSpan.textContent = "⛴️";
+        if (textSpan) textSpan.textContent = "BUSCAR FERRIES";
+      } else {
+        btnTransporte.href = buildFlightsUrl(trip.origen, trip.destino);
+        btnTransporte.className =
+          "flex flex-col items-center justify-center bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 p-4 rounded-xl border border-blue-100 dark:border-blue-800 transition-colors shadow-sm";
+        if (iconSpan) iconSpan.textContent = "✈️";
+        if (textSpan) textSpan.textContent = "BUSCAR VUELOS";
+      }
     }
 
     if (btnHoteles && trip.destino) {
