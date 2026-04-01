@@ -292,7 +292,7 @@ import Layout from "../../layouts/BaseLayout.astro";
   }
 
   async function initBackendConfig() {
-    const token = getCookie("authToken");
+    const token = localStorage.getItem("authToken") || getCookie("authToken");
     if (!token) return;
 
     const currencySel = document.getElementById(

@@ -113,6 +113,8 @@ import Layout from "../../layouts/BaseLayout.astro";
 
 <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
 <script>
   import { getProfile, updateProfile } from "../../services/api/authAPI";
 
@@ -142,7 +144,7 @@ import Layout from "../../layouts/BaseLayout.astro";
   let croppedBlob: Blob | null = null;
 
   async function loadData() {
-      const token = getCookie('authToken');
+      const token = localStorage.getItem("authToken") || getCookie('authToken');
       if (!token) return;
 
       try {
@@ -233,7 +235,7 @@ import Layout from "../../layouts/BaseLayout.astro";
   form?.addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      const token = getCookie('authToken');
+      const token = localStorage.getItem("authToken") || getCookie('authToken');
       if (!token) return;
 
       const newUsername = usernameInput.value;
