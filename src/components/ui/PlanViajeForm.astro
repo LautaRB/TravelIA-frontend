@@ -278,25 +278,10 @@
 </style>
 
 <script>
-  interface Lugar {
-    display_name: string;
-  }
+  import { locationAPI, type Lugar } from "../../services/api/locationAPI";
 
   document.addEventListener("DOMContentLoaded", () => {
-    async function buscarLugares(query: string): Promise<Lugar[]> {
-      if (query.length < 3) return [];
-
-      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&featuretype=city`;
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-        return data;
-      } catch (error) {
-        console.error("Error buscando lugares:", error);
-        return [];
-      }
-    }
-
+    
     function setupAutocomplete(inputId: string, listId: string) {
       const input = document.getElementById(inputId) as HTMLInputElement | null;
       const list = document.getElementById(listId) as HTMLUListElement | null;
@@ -317,7 +302,9 @@
         }
 
         timeoutId = window.setTimeout(async () => {
-          const resultados = await buscarLugares(valor);
+          
+          const resultados = await locationAPI.buscarLugares(valor);
+          
           list.innerHTML = "";
 
           if (resultados.length > 0) {

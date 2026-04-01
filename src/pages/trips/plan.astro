@@ -102,8 +102,7 @@ import PlanViajeForm from "../../components/ui/PlanViajeForm.astro";
 
 <script>
   import { createPlanOptionCard } from "../../components/ui/PlanOptionCard.ts";
-
-  const BASE_URL = import.meta.env.PUBLIC_API_BASE_URL;
+  import { viajesAPI } from "../../services/api/viajesAPI";
 
   function getCookie(name: string): string | null {
     const value = `; ${document.cookie}`;
@@ -164,7 +163,7 @@ import PlanViajeForm from "../../components/ui/PlanViajeForm.astro";
       destino: (document.getElementById("destino") as HTMLInputElement).value,
       fecha_inicio: fechaInicioInput.value,
       fecha_fin: fechaFinInput.value,
-      rango_fechas: `${fechaInicioInput.value} - ${fechaFinInput.value}`, // Formato "YYYY-MM-DD - YYYY-MM-DD"
+      rango_fechas: `${fechaInicioInput.value} - ${fechaFinInput.value}`, 
       cantidad_personas: parseInt(
         (document.getElementById("cantidad_personas") as HTMLInputElement)
           .value,
@@ -183,27 +182,9 @@ import PlanViajeForm from "../../components/ui/PlanViajeForm.astro";
 
     try {
       const token = localStorage.getItem("authToken") || getCookie("authToken");
+      if (!token) throw new Error("No hay sesión activa");
 
-      // PETICIÓN A LA IA
-      const response = await fetch(`${BASE_URL}/viajes/planificar/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          origen: formValues.origen,
-          destino: formValues.destino,
-          rango_fechas: formValues.rango_fechas,
-          cantidad_personas: formValues.cantidad_personas,
-          medio_transporte: formValues.medio_transporte,
-          motivo_viaje: formValues.motivo_viaje,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) throw new Error(data.message || "Error al planificar");
+      const data = await viajesAPI.planificarConIA(formValues, token);
 
       if (
         data.opciones &&
@@ -221,7 +202,7 @@ import PlanViajeForm from "../../components/ui/PlanViajeForm.astro";
 
       if (availableOptions.length === 0) {
         alert(
-          "🌍 No pudimos encontrar rutas para esos destinos.\n\nPor favor, verificá que los lugares sean reales, geográficos y estén bien escritos (ej: 'Madrid' en vez de 'Narnia').",
+          "🌍 No pudimos encontrar rutas para esos destinos.\n\nPor favor, verificá que los lugares sean reales, geográficos y estén bien escritos.",
         );
 
         stepLoading?.classList.add("hidden");
@@ -282,7 +263,6 @@ import PlanViajeForm from "../../components/ui/PlanViajeForm.astro";
 
     const opcionElegida = availableOptions[selectedOptionIndex];
 
-    //GUARDADO EN LA BASE DE DATOS
     const payload = {
       titulo: formValues.titulo,
       origen: formValues.origen,
@@ -304,19 +284,9 @@ import PlanViajeForm from "../../components/ui/PlanViajeForm.astro";
 
     try {
       const token = localStorage.getItem("authToken") || getCookie("authToken");
+      if (!token) throw new Error("No hay sesión activa");
 
-      const response = await fetch(`${BASE_URL}/viajes/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) throw new Error(result.message || "Error al guardar");
+      await viajesAPI.crearViaje(payload, token);
 
       alert("¡Viaje guardado correctamente! ✈️");
       window.location.href = "/dashboard/dashboard/index.html";

@@ -61,8 +61,7 @@ import HeroAction from "../../components/ui/HeroAction.astro";
 <script>
   import { createDashboardCard } from "../../components/ui/DashboardCard.ts";
   import { NotificationService } from "../../utils/notifications.ts";
-
-  const BASE_URL = import.meta.env.PUBLIC_API_BASE_URL || "https://travelia-backend.onrender.com/api";
+  import { viajesAPI } from "../../services/api/viajesAPI";
 
   const createTripBtn = document.getElementById('createTripBtn');
   const loadingState = document.getElementById('loading-state');
@@ -94,31 +93,23 @@ import HeroAction from "../../components/ui/HeroAction.astro";
       }
 
       try {
-          const response = await fetch(`${BASE_URL}/viajes/`, {
-              method: 'GET',
-              headers: {
-                  'Authorization': `Bearer ${token}`,
-                  'Content-Type': 'application/json'
-              }
-          });
-
-          if (response.status === 401) {
-              localStorage.removeItem('authToken');
-              window.location.href = '/login/index.html';
-              return;
-          }
-
-          if (!response.ok) throw new Error("Error al obtener viajes");
-
-          const data = await response.json();
+          const data = await viajesAPI.getAll(token);
           const viajes = Array.isArray(data) ? data : (data.results || []);
 
           renderTrips(viajes);
 
           NotificationService.scheduleForTrips(viajes);
-      } catch (error) {
+          
+      } catch (error: any) {
           console.error("Error cargando dashboard:", error);
-          showEmptyState();
+          
+          if (error.message === "Unauthorized") {
+              localStorage.removeItem('authToken');
+              document.cookie = "authToken=; path=/; max-age=0; secure; samesite=strict";
+              window.location.href = '/login/index.html';
+          } else {
+              showEmptyState();
+          }
       }
   }
 
@@ -151,5 +142,4 @@ import HeroAction from "../../components/ui/HeroAction.astro";
   }
 
   loadTrips();
-
 </script>

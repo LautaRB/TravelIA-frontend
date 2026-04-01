@@ -173,10 +173,7 @@ import Layout from "../../layouts/BaseLayout.astro";
 
 <script>
   import { createPlanOptionCard } from "../../components/ui/PlanOptionCard";
-
-  const BASE_URL =
-    import.meta.env.PUBLIC_API_BASE_URL ||
-    "https://travelia-backend.onrender.com/api";
+  import { viajesAPI } from "../../services/api/viajesAPI";
 
   const form = document.getElementById("edit-form") as HTMLFormElement;
   const btnRecalcular = document.getElementById(
@@ -212,12 +209,7 @@ import Layout from "../../layouts/BaseLayout.astro";
       return;
     }
     try {
-      const res = await fetch(`${BASE_URL}/viajes/${tripId}/`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) throw new Error("Error cargando datos");
-
-      oldTripData = await res.json();
+      oldTripData = await viajesAPI.getById(tripId, token);
 
       const setVal = (id: string, val: any) => {
         const el = document.getElementById(id) as HTMLInputElement | HTMLSelectElement;
@@ -256,6 +248,11 @@ import Layout from "../../layouts/BaseLayout.astro";
       return;
     }
 
+    if (!tripId || !token) {
+      alert("Error: Faltan datos del viaje o de la sesión.");
+      return;
+    }
+
     form.classList.add("hidden");
     loadingIa?.classList.remove("hidden");
     loadingIa?.classList.add("flex");
@@ -280,25 +277,7 @@ import Layout from "../../layouts/BaseLayout.astro";
     };
 
     try {
-      const response = await fetch(`${BASE_URL}/viajes/planificar/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(aiPayload),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        let errorMsg = "Fallo en la validación del viaje.";
-        if (errorData.errores) {
-          errorMsg = Object.values(errorData.errores).flat().join("\n");
-        }
-        throw new Error(errorMsg);
-      }
-
-      const data = await response.json();
+      const data = await viajesAPI.planificarConIA(aiPayload, token);
 
       if (
         data.opciones &&
@@ -376,6 +355,11 @@ import Layout from "../../layouts/BaseLayout.astro";
   async function guardarCambiosFinales() {
     if (selectedOptionIndex === null) return;
 
+    if (!tripId || !token) {
+      alert("Error: Faltan datos del viaje o de la sesión.");
+      return;
+    }
+
     const originalText = btnGuardarFinal.innerText;
     btnGuardarFinal.innerText = "Guardando en la base de datos...";
     btnGuardarFinal.disabled = true;
@@ -403,24 +387,11 @@ import Layout from "../../layouts/BaseLayout.astro";
     };
 
     try {
-      const res = await fetch(`${BASE_URL}/viajes/${tripId}/`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(patchPayload),
-      });
-
-      if (res.ok) {
-        window.location.replace(`/trips/detail/index.html?id=${tripId}`);
-      } else {
-        const json = await res.json();
-        alert(json.message || "No se pudo actualizar el viaje.");
-      }
-    } catch (error) {
+      await viajesAPI.actualizarViaje(tripId, patchPayload, token);
+      window.location.replace(`/trips/detail/index.html?id=${tripId}`);
+    } catch (error: any) {
       console.error(error);
-      alert("Error de conexión con el servidor.");
+      alert(error.message || "Error de conexión con el servidor.");
     } finally {
       btnGuardarFinal.innerText = originalText;
       btnGuardarFinal.disabled = false;

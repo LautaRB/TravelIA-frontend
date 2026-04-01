@@ -191,10 +191,7 @@ import BottomNav from "../../components/layout/BottomNav.astro";
     buildBusUrl,
     buildFerryUrl
   } from "../../utils/linkBuilder.ts";
-
-  const BASE_URL =
-    import.meta.env.PUBLIC_API_BASE_URL ||
-    "https://travelia-backend.onrender.com/api";
+  import { viajesAPI } from "../../services/api/viajesAPI";
 
   const urlParams = new URLSearchParams(window.location.search);
   const tripId = urlParams.get("id");
@@ -213,19 +210,14 @@ import BottomNav from "../../components/layout/BottomNav.astro";
 
   async function loadTripDetails() {
     const token = localStorage.getItem("authToken");
+    
     if (!token || !tripId) {
       window.location.href = "/trips/index.html";
       return;
     }
 
     try {
-      const response = await fetch(`${BASE_URL}/viajes/${tripId}/`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (!response.ok) throw new Error("Error fetching trip");
-
-      const data = await response.json();
+      const data = await viajesAPI.getById(tripId, token);
       renderDetails(data);
     } catch (error) {
       console.error(error);
@@ -372,8 +364,6 @@ import BottomNav from "../../components/layout/BottomNav.astro";
     ) {
       return;
     }
-
-    if (!itinerarioArray || itinerarioArray.length === 0) return;
 
     let html =
       '<div class="relative border-l-2 border-ocean-200 dark:border-slate-700 ml-3 md:ml-4 space-y-8 pb-4">';
