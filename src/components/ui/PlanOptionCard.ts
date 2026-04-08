@@ -16,7 +16,9 @@ export function createPlanOptionCard(
 
     card.className = `relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 bg-white dark:bg-slate-800 shadow-sm flex flex-col h-full ${borderClass}`;
     
-    const precioTotal = opcion.precio_estimado || opcion.costo_estimado || opcion.presupuesto_total || (opcion.medio && opcion.medio.precio_total) || (opcion.medio && opcion.medio.precio) || 'A calcular';
+    const precioTotal = opcion.precio_total_opcion || opcion.precio_estimado || opcion.costo_estimado || opcion.presupuesto_total || (opcion.medio && opcion.medio.precio_total) || 'A calcular';
+
+    const precioDisplay = !isNaN(Number(precioTotal)) ? Number(precioTotal).toLocaleString('es-AR') : precioTotal;
 
     const linkAlojamiento = buildAccommodationUrl(formValues.destino, formValues.fecha_inicio, formValues.fecha_fin);
 
@@ -51,11 +53,11 @@ export function createPlanOptionCard(
             <div class="bg-gray-50 dark:bg-slate-700/50 rounded-xl p-3 space-y-2 mb-4">
                 <div class="flex items-center gap-2 text-sm text-gray-700 dark:text-slate-300">
                     <span class="text-lg">🛣️</span>
-                    <span class="font-medium">${opcion.ruta.nombre}</span>
+                    <span class="font-medium">${opcion.ruta?.nombre || 'Ruta'}</span>
                 </div>
                 <div class="flex items-center gap-2 text-sm text-gray-700 dark:text-slate-300">
                     <span class="text-lg">${tipoTransporte.includes('AEREO') ? '✈️' : tipoTransporte.includes('MARITIMO') ? '⛴️' : '🚗'}</span>
-                    <span class="font-medium">${opcion.medio.nombre}</span>
+                    <span class="font-medium">${opcion.medio?.nombre || 'Transporte'}</span>
                 </div>
             </div>
         </div>
@@ -71,7 +73,7 @@ export function createPlanOptionCard(
 
         <div class="flex justify-between items-end border-t border-gray-100 dark:border-slate-700 pt-3 mt-auto">
             <span class="text-xs font-bold uppercase text-ocean-400 tracking-wider">Precio Est.</span>
-            <span class="text-xl font-bold text-ocean-600 dark:text-ocean-400">$${precioTotal}</span>
+            <span class="text-xl font-bold text-ocean-600 dark:text-ocean-400">$${precioDisplay}</span>
         </div>
     `;
 
