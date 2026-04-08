@@ -1,50 +1,75 @@
-import { buildFlightsUrl, buildAccommodationUrl, buildBusUrl, buildFerryUrl } from "../../utils/linkBuilder.ts";
+import {
+    buildFlightsUrl,
+    buildAccommodationUrl,
+    buildBusUrl,
+    buildFerryUrl,
+} from "../../utils/linkBuilder.ts";
 
 export function createPlanOptionCard(
-    opcion: any, 
-    index: number, 
-    isSelected: boolean, 
+    opcion: any,
+    index: number,
+    isSelected: boolean,
     formValues: any,
-    onSelect: (idx: number) => void
+    onSelect: (idx: number) => void,
 ): HTMLElement {
-    
-    const card = document.createElement('div');
-    
-    const borderClass = isSelected 
-        ? 'border-ocean-500 ring-4 ring-ocean-100 dark:ring-ocean-900 transform scale-[1.02]' 
-        : 'border-gray-100 dark:border-slate-700 hover:border-ocean-300';
+    const card = document.createElement("div");
+
+    const borderClass = isSelected
+        ? "border-ocean-500 ring-4 ring-ocean-100 dark:ring-ocean-900 transform scale-[1.02]"
+        : "border-gray-100 dark:border-slate-700 hover:border-ocean-300";
 
     card.className = `relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 bg-white dark:bg-slate-800 shadow-sm flex flex-col h-full ${borderClass}`;
-    
-    const precioTotal = opcion.precio_total_opcion || opcion.precio_estimado || opcion.costo_estimado || opcion.presupuesto_total || (opcion.medio && opcion.medio.precio_total) || 'A calcular';
 
-    const precioDisplay = !isNaN(Number(precioTotal)) ? Number(precioTotal).toLocaleString('es-AR') : precioTotal;
+    const precioTotal =
+        opcion.precio_total_opcion ||
+        opcion.precio_estimado ||
+        opcion.costo_estimado ||
+        opcion.presupuesto_total ||
+        (opcion.medio && opcion.medio.precio_total) ||
+        "A calcular";
 
-    const linkAlojamiento = buildAccommodationUrl(formValues.destino, formValues.fecha_inicio, formValues.fecha_fin);
+    const precioDisplay = !isNaN(Number(precioTotal))
+        ? Number(precioTotal).toLocaleString("es-AR")
+        : precioTotal;
 
-    const tipoTransporte = opcion.medio?.tipo?.toUpperCase() || 'AEREO';
+    const categoria = opcion.categoria_presupuesto || "Medio";
+
+    const linkAlojamiento = buildAccommodationUrl(
+        formValues.destino,
+        formValues.fecha_inicio,
+        formValues.fecha_fin,
+        categoria,
+    );
+
+    const fechaSalida = formValues.fecha_inicio;
+
+    const tipoTransporte = opcion.medio?.tipo?.toUpperCase() || "AEREO";
     let btnTransporteConfig = {
-        texto: '✈️ Vuelos',
-        url: buildFlightsUrl(formValues.origen, formValues.destino),
-        clases: 'bg-blue-50 hover:bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
+        texto: "✈️ Vuelos",
+        url: buildFlightsUrl(formValues.origen, formValues.destino, fechaSalida),
+        clases: "...",
     };
 
     if (tipoTransporte.includes('TERRESTRE')) {
         btnTransporteConfig = {
             texto: '🚌 Pasajes',
-            url: buildBusUrl(formValues.origen, formValues.destino),
-            clases: 'bg-emerald-50 hover:bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
+            url: buildBusUrl(formValues.origen, formValues.destino, fechaSalida),
+            clases: '...'
         };
-    } else if (tipoTransporte.includes('MARITIMO') || tipoTransporte.includes('MARÍTIMO')) {
+    } else if (
+        tipoTransporte.includes("MARITIMO") ||
+        tipoTransporte.includes("MARÍTIMO")
+    ) {
         btnTransporteConfig = {
-            texto: '⛴️ Ferries',
+            texto: "⛴️ Ferries",
             url: buildFerryUrl(formValues.origen, formValues.destino),
-            clases: 'bg-cyan-50 hover:bg-cyan-100 text-cyan-600 dark:bg-cyan-900/30 dark:text-cyan-400'
+            clases:
+                "bg-cyan-50 hover:bg-cyan-100 text-cyan-600 dark:bg-cyan-900/30 dark:text-cyan-400",
         };
     }
 
     card.innerHTML = `
-        ${isSelected ? '<div class="absolute -top-3 -right-3 bg-ocean-500 text-white rounded-full p-1 z-10"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>' : ''}
+        ${isSelected ? '<div class="absolute -top-3 -right-3 bg-ocean-500 text-white rounded-full p-1 z-10"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>' : ""}
         
         <div class="flex-grow">
             <h3 class="text-lg font-bold text-ocean-900 dark:text-white mb-1">${opcion.titulo}</h3>
@@ -53,11 +78,11 @@ export function createPlanOptionCard(
             <div class="bg-gray-50 dark:bg-slate-700/50 rounded-xl p-3 space-y-2 mb-4">
                 <div class="flex items-center gap-2 text-sm text-gray-700 dark:text-slate-300">
                     <span class="text-lg">🛣️</span>
-                    <span class="font-medium">${opcion.ruta?.nombre || 'Ruta'}</span>
+                    <span class="font-medium">${opcion.ruta?.nombre || "Ruta"}</span>
                 </div>
                 <div class="flex items-center gap-2 text-sm text-gray-700 dark:text-slate-300">
-                    <span class="text-lg">${tipoTransporte.includes('AEREO') ? '✈️' : tipoTransporte.includes('MARITIMO') ? '⛴️' : '🚗'}</span>
-                    <span class="font-medium">${opcion.medio?.nombre || 'Transporte'}</span>
+                    <span class="text-lg">${tipoTransporte.includes("AEREO") ? "✈️" : tipoTransporte.includes("MARITIMO") ? "⛴️" : "🚗"}</span>
+                    <span class="font-medium">${opcion.medio?.nombre || "Transporte"}</span>
                 </div>
             </div>
         </div>

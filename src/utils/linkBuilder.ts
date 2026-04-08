@@ -1,15 +1,17 @@
-// Vuelos (Google Flights genérico)
-export function buildFlightsUrl(origen: string, destino: string): string {
-    const origenClean = encodeURIComponent(origen);
-    const destinoClean = encodeURIComponent(destino);
-    return `https://www.google.com/search?q=vuelos+de+${origenClean}+a+${destinoClean}&tbm=flm`;
+// Google Flights
+export function buildFlightsUrl(origen: string, destino: string, fecha: string): string {
+    const cityOrigin = origen.split(',')[0].trim();
+    const cityDest = destino.split(',')[0].trim();
+    
+    const q = encodeURIComponent(`vuelos de ${cityOrigin} a ${cityDest} el ${fecha}`);
+    return `https://www.google.com/travel/flights?q=${q}`;
 }
 
-// Micros / Trenes (Busbud)
-export function buildBusUrl(origen: string, destino: string): string {
-    const origenClean = encodeURIComponent(origen);
-    const destinoClean = encodeURIComponent(destino);
-    return `https://www.busbud.com/es/search?origin=${origenClean}&destination=${destinoClean}`;
+// Rome2Rio
+export function buildBusUrl(origen: string, destino: string, fecha: string): string {
+    const cityOrigin = encodeURIComponent(origen.split(',')[0].trim());
+    const cityDest = encodeURIComponent(destino.split(',')[0].trim());
+    return `https://www.rome2rio.com/es/s/${cityOrigin}/${cityDest}`;
 }
 
 // Ferries (DirectFerries)
@@ -19,12 +21,28 @@ export function buildFerryUrl(origen: string, destino: string): string {
     return `https://www.rome2rio.com/es/map/${origenClean}/${destinoClean}`;
 }
 
-// Booking.com con las fechas exactas
-export function buildAccommodationUrl(destino: string, checkin: string, checkout: string): string {
-    const destinoClean = encodeURIComponent(destino);
+// Booking
+export function buildAccommodationUrl(
+    destino: string, 
+    checkin: string, 
+    checkout: string, 
+    presupuesto: string = 'Medio'
+): string {
+    const destClean = encodeURIComponent(destino.split(',')[0].trim());
+    
+    let baseUrl = `https://www.booking.com/searchresults.es-ar.html?ss=${destClean}&group_adults=2&no_rooms=1`;
     
     if (checkin && checkout && checkin !== '-' && checkout !== '-') {
-        return `https://www.booking.com/searchresults.es-ar.html?ss=${destinoClean}&checkin=${checkin}&checkout=${checkout}`;
+        baseUrl += `&checkin=${checkin}&checkout=${checkout}`;
     }
-    return `https://www.booking.com/searchresults.es-ar.html?ss=${destinoClean}`;
+
+    if (presupuesto === 'Alto') {
+        baseUrl += '&nflt=class%3D4%3Bclass%3D5&order=popularity';
+    } else if (presupuesto === 'Bajo') {
+        baseUrl += '&order=price';
+    } else {
+        baseUrl += '&order=popularity';
+    }
+
+    return baseUrl
 }
