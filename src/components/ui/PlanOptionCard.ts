@@ -39,6 +39,8 @@ export function createPlanOptionCard(
         formValues.fecha_inicio,
         formValues.fecha_fin,
         categoria,
+        formValues.cantidad_adultos,
+        formValues.cantidad_ninos
     );
 
     const fechaSalida = formValues.fecha_inicio;

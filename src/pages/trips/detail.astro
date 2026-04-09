@@ -308,6 +308,8 @@ import BottomNav from "../../components/layout/BottomNav.astro";
     ) as HTMLAnchorElement;
 
     const categoriaViaje = trip.categoria_presupuesto || 'Medio';
+    const adultos = trip.cantidad_adultos || 2;
+    const ninos = trip.cantidad_ninos || 0;
 
     if (btnTransporte && trip.origen && trip.destino) {
       const tipoMedio = trip.medio?.tipo?.toUpperCase() || "AEREO";
@@ -342,7 +344,7 @@ import BottomNav from "../../components/layout/BottomNav.astro";
     }
 
     if (btnHoteles && trip.destino) {
-      btnHoteles.href = buildAccommodationUrl(trip.destino, fInicio, fFin, categoriaViaje);
+      btnHoteles.href = buildAccommodationUrl(trip.destino, fInicio, fFin, categoriaViaje, adultos, ninos);
     }
 
     if (trip.itinerario) {

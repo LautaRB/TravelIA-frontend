@@ -95,11 +95,12 @@ import Layout from "../../layouts/BaseLayout.astro";
 
         <div class="grid grid-cols-2 gap-4">
           <div class="flex flex-col gap-1">
-            <label class="text-xs font-bold text-ocean-700 uppercase">Pasajeros</label>
+            <label class="text-xs font-bold text-ocean-700 uppercase"
+              >Adultos</label
+            >
             <input
               type="number"
-              id="cantidad_personas"
-              name="cantidad_personas"
+              id="cantidad_adultos"
               min="1"
               max="50"
               class="w-full p-3 rounded-xl border border-gray-200 dark:bg-slate-800 dark:border-slate-600 dark:text-white"
@@ -107,27 +108,56 @@ import Layout from "../../layouts/BaseLayout.astro";
             />
           </div>
           <div class="flex flex-col gap-1">
-            <label class="text-xs font-bold text-ocean-700 uppercase">Transporte</label>
-            <select id="medio_transporte" name="medio_transporte" class="w-full p-3 rounded-xl border border-gray-200 dark:bg-slate-800 dark:border-slate-600 dark:text-white" required>
+            <label class="text-xs font-bold text-ocean-700 uppercase"
+              >Niños</label
+            >
+            <input
+              type="number"
+              id="cantidad_ninos"
+              min="0"
+              max="50"
+              class="w-full p-3 rounded-xl border border-gray-200 dark:bg-slate-800 dark:border-slate-600 dark:text-white"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-bold text-ocean-700 uppercase"
+              >Transporte</label
+            >
+            <select
+              id="medio_transporte"
+              name="medio_transporte"
+              class="w-full p-3 rounded-xl border border-gray-200 dark:bg-slate-800 dark:border-slate-600 dark:text-white"
+              required
+            >
               <option value="AEREA">Avión</option>
               <option value="TERRESTRE">Bus / Auto</option>
               <option value="MARITIMO">Barco / Ferry</option>
               <option value="SIN DEFINIR">Que decida la IA</option>
             </select>
           </div>
-        </div>
-
-        <div class="flex flex-col gap-1">
-          <label class="text-xs font-bold text-ocean-700 uppercase">Motivo del Viaje</label>
-          <select id="motivo_viaje" name="motivo_viaje" class="w-full p-3 rounded-xl border border-gray-200 dark:bg-slate-800 dark:border-slate-600 dark:text-white" required>
-            <option value="VACACIONES">Vacaciones y Ocio</option>
-            <option value="RELAX">Descanso y Relax</option>
-            <option value="AVENTURA">Turismo Aventura</option>
-            <option value="CULTURAL">Cultural e Histórico</option>
-            <option value="LUNA_DE_MIEL">Luna de Miel / Romántico</option>
-            <option value="TRABAJO">Negocios y Trabajo</option>
-            <option value="OTRO">Otro</option>
-          </select>
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-bold text-ocean-700 uppercase"
+              >Motivo</label
+            >
+            <select
+              id="motivo_viaje"
+              name="motivo_viaje"
+              class="w-full p-3 rounded-xl border border-gray-200 dark:bg-slate-800 dark:border-slate-600 dark:text-white"
+              required
+            >
+              <option value="VACACIONES">Vacaciones y Ocio</option>
+              <option value="RELAX">Descanso y Relax</option>
+              <option value="AVENTURA">Turismo Aventura</option>
+              <option value="CULTURAL">Cultural e Histórico</option>
+              <option value="LUNA_DE_MIEL">Luna de Miel / Romántico</option>
+              <option value="TRABAJO">Negocios y Trabajo</option>
+              <option value="OTRO">Otro</option>
+            </select>
+          </div>
         </div>
         <button
           type="button"
@@ -212,7 +242,9 @@ import Layout from "../../layouts/BaseLayout.astro";
       oldTripData = await viajesAPI.getById(tripId, token);
 
       const setVal = (id: string, val: any) => {
-        const el = document.getElementById(id) as HTMLInputElement | HTMLSelectElement;
+        const el = document.getElementById(id) as
+          | HTMLInputElement
+          | HTMLSelectElement;
         if (el && val) el.value = val;
       };
 
@@ -231,11 +263,12 @@ import Layout from "../../layouts/BaseLayout.astro";
       setVal("destino", oldTripData.destino);
       setVal("fecha_inicio", fInicio);
       setVal("fecha_fin", fFin);
-      
-      setVal("cantidad_personas", oldTripData.cantidad_personas || 1);
-      setVal("motivo_viaje", oldTripData.motivo_viaje || "VACACIONES");
-      setVal("medio_transporte", "SIN DEFINIR"); 
 
+      setVal("cantidad_personas", oldTripData.cantidad_personas || 1);
+      setVal("cantidad_adultos", oldTripData.cantidad_adultos || 2);
+      setVal("cantidad_ninos", oldTripData.cantidad_ninos || 0);
+      setVal("motivo_viaje", oldTripData.motivo_viaje || "VACACIONES");
+      setVal("medio_transporte", "SIN DEFINIR");
     } catch (e) {
       console.error(e);
       alert("No se pudieron cargar los datos del viaje.");
@@ -257,21 +290,33 @@ import Layout from "../../layouts/BaseLayout.astro";
     loadingIa?.classList.remove("hidden");
     loadingIa?.classList.add("flex");
 
-    const titulo = (document.getElementById("titulo") as HTMLInputElement).value;
-    const origen = (document.getElementById("origen") as HTMLInputElement).value;
-    const destino = (document.getElementById("destino") as HTMLInputElement).value;
-    const fecha_inicio = (document.getElementById("fecha_inicio") as HTMLInputElement).value;
-    const fecha_fin = (document.getElementById("fecha_fin") as HTMLInputElement).value;
-    
-    const cantidad_personas = parseInt((document.getElementById("cantidad_personas") as HTMLInputElement).value) || 1;
-    const medio_transporte = (document.getElementById("medio_transporte") as HTMLSelectElement).value;
-    const motivo_viaje = (document.getElementById("motivo_viaje") as HTMLSelectElement).value;
+    const titulo = (document.getElementById("titulo") as HTMLInputElement)
+      .value;
+    const origen = (document.getElementById("origen") as HTMLInputElement)
+      .value;
+    const destino = (document.getElementById("destino") as HTMLInputElement)
+      .value;
+    const fecha_inicio = (
+      document.getElementById("fecha_inicio") as HTMLInputElement
+    ).value;
+    const fecha_fin = (document.getElementById("fecha_fin") as HTMLInputElement)
+      .value;
+
+    const adultos = parseInt((document.getElementById("cantidad_adultos") as HTMLInputElement).value) || 1;
+    const ninos = parseInt((document.getElementById("cantidad_ninos") as HTMLInputElement).value) || 0;
+    const cantidad_personas = adultos + ninos;
+    const medio_transporte = (
+      document.getElementById("medio_transporte") as HTMLSelectElement
+    ).value;
+    const motivo_viaje = (
+      document.getElementById("motivo_viaje") as HTMLSelectElement
+    ).value;
 
     const aiPayload = {
       origen,
       destino,
       rango_fechas: `${fecha_inicio} - ${fecha_fin}`,
-      cantidad_personas,
+      cantidad_personas, cantidad_adultos: adultos, cantidad_ninos: ninos,
       medio_transporte,
       motivo_viaje,
     };
@@ -299,7 +344,10 @@ import Layout from "../../layouts/BaseLayout.astro";
       opcionesContainer?.classList.remove("hidden");
     } catch (error: any) {
       console.error(error);
-      alert(error.message || "Hubo un error al re-calcular el viaje. Intenta de nuevo.");
+      alert(
+        error.message ||
+          "Hubo un error al re-calcular el viaje. Intenta de nuevo.",
+      );
       loadingIa?.classList.remove("flex");
       loadingIa?.classList.add("hidden");
       form.classList.remove("hidden");
@@ -331,8 +379,11 @@ import Layout from "../../layouts/BaseLayout.astro";
     const formValues = {
       origen: (document.getElementById("origen") as HTMLInputElement).value,
       destino: (document.getElementById("destino") as HTMLInputElement).value,
-      fecha_inicio: (document.getElementById("fecha_inicio") as HTMLInputElement).value,
-      fecha_fin: (document.getElementById("fecha_fin") as HTMLInputElement).value,
+      fecha_inicio: (
+        document.getElementById("fecha_inicio") as HTMLInputElement
+      ).value,
+      fecha_fin: (document.getElementById("fecha_fin") as HTMLInputElement)
+        .value,
     };
 
     availableOptions.forEach((opcion, index) => {
@@ -365,11 +416,18 @@ import Layout from "../../layouts/BaseLayout.astro";
     btnGuardarFinal.disabled = true;
 
     const opcionElegida = availableOptions[selectedOptionIndex];
-    const fInicio = (document.getElementById("fecha_inicio") as HTMLInputElement).value;
-    const fFin = (document.getElementById("fecha_fin") as HTMLInputElement).value;
-    
-    const pasajeros = parseInt((document.getElementById("cantidad_personas") as HTMLInputElement).value) || 1;
-    const motivo = (document.getElementById("motivo_viaje") as HTMLSelectElement).value;
+    const fInicio = (
+      document.getElementById("fecha_inicio") as HTMLInputElement
+    ).value;
+    const fFin = (document.getElementById("fecha_fin") as HTMLInputElement)
+      .value;
+
+    const adultos = parseInt((document.getElementById("cantidad_adultos") as HTMLInputElement).value) || 1;
+    const ninos = parseInt((document.getElementById("cantidad_ninos") as HTMLInputElement).value) || 0;
+    const pasajeros = adultos + ninos;
+    const motivo = (
+      document.getElementById("motivo_viaje") as HTMLSelectElement
+    ).value;
 
     const patchPayload = {
       titulo: (document.getElementById("titulo") as HTMLInputElement).value,
@@ -379,6 +437,8 @@ import Layout from "../../layouts/BaseLayout.astro";
       fecha_inicio: fInicio,
       fecha_fin: fFin,
       cantidad_personas: pasajeros,
+      cantidad_adultos: adultos,
+      cantidad_ninos: ninos,
       motivo_viaje: motivo,
       ruta_data: opcionElegida.ruta,
       medio_data: opcionElegida.medio,

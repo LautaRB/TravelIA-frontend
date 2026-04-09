@@ -163,11 +163,24 @@ import PlanViajeForm from "../../components/ui/PlanViajeForm.astro";
       destino: (document.getElementById("destino") as HTMLInputElement).value,
       fecha_inicio: fechaInicioInput.value,
       fecha_fin: fechaFinInput.value,
-      rango_fechas: `${fechaInicioInput.value} - ${fechaFinInput.value}`, 
-      cantidad_personas: parseInt(
-        (document.getElementById("cantidad_personas") as HTMLInputElement)
-          .value,
-      ),
+      rango_fechas: `${fechaInicioInput.value} - ${fechaFinInput.value}`,
+      cantidad_adultos:
+        parseInt(
+          (document.getElementById("cantidad_adultos") as HTMLInputElement)
+            .value,
+        ) || 1,
+      cantidad_ninos:
+        parseInt(
+          (document.getElementById("cantidad_ninos") as HTMLInputElement).value,
+        ) || 0,
+      cantidad_personas:
+        (parseInt(
+          (document.getElementById("cantidad_adultos") as HTMLInputElement)
+            .value,
+        ) || 1) +
+        (parseInt(
+          (document.getElementById("cantidad_ninos") as HTMLInputElement).value,
+        ) || 0),
       medio_transporte: (
         document.getElementById("medio_transporte") as HTMLSelectElement
       ).value,
@@ -198,7 +211,8 @@ import PlanViajeForm from "../../components/ui/PlanViajeForm.astro";
         availableOptions = [];
       }
 
-      viajeItinerario = data.itinerario || (data.opciones && data.opciones.itinerario) || [];
+      viajeItinerario =
+        data.itinerario || (data.opciones && data.opciones.itinerario) || [];
 
       if (availableOptions.length === 0) {
         alert(
@@ -231,8 +245,12 @@ import PlanViajeForm from "../../components/ui/PlanViajeForm.astro";
     availableOptions.forEach((opcion: any, index: number) => {
       const isSelected = selectedOptionIndex === index;
 
-      const card = createPlanOptionCard(opcion, index, isSelected, formValues, (idx) =>
-        selectOption(idx),
+      const card = createPlanOptionCard(
+        opcion,
+        index,
+        isSelected,
+        formValues,
+        (idx) => selectOption(idx),
       );
 
       optionsContainer.appendChild(card);
@@ -267,10 +285,12 @@ import PlanViajeForm from "../../components/ui/PlanViajeForm.astro";
       titulo: formValues.titulo,
       origen: formValues.origen,
       destino: formValues.destino,
-      rango_fechas: formValues.rango_fechas, 
+      rango_fechas: formValues.rango_fechas,
       fecha_inicio: formValues.fecha_inicio,
-      fecha_fin: formValues.fecha_fin,       
+      fecha_fin: formValues.fecha_fin,
       cantidad_personas: formValues.cantidad_personas,
+      cantidad_adultos: formValues.cantidad_adultos,
+      cantidad_ninos: formValues.cantidad_ninos,
       motivo_viaje: formValues.motivo_viaje,
       ruta_data: opcionElegida.ruta,
       medio_data: opcionElegida.medio,

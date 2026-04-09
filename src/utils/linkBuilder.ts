@@ -21,16 +21,18 @@ export function buildFerryUrl(origen: string, destino: string): string {
     return `https://www.rome2rio.com/es/map/${origenClean}/${destinoClean}`;
 }
 
-// Booking
+// Booking con soporte familiar
 export function buildAccommodationUrl(
     destino: string, 
     checkin: string, 
     checkout: string, 
-    presupuesto: string = 'Medio'
+    presupuesto: string = 'Medio',
+    adultos: number = 2,
+    ninos: number = 0
 ): string {
     const destClean = encodeURIComponent(destino.split(',')[0].trim());
     
-    let baseUrl = `https://www.booking.com/searchresults.es-ar.html?ss=${destClean}&group_adults=2&no_rooms=1`;
+    let baseUrl = `https://www.booking.com/searchresults.es-ar.html?ss=${destClean}&group_adults=${adultos}&group_children=${ninos}&no_rooms=1`;
     
     if (checkin && checkout && checkin !== '-' && checkout !== '-') {
         baseUrl += `&checkin=${checkin}&checkout=${checkout}`;
@@ -44,5 +46,5 @@ export function buildAccommodationUrl(
         baseUrl += '&order=popularity';
     }
 
-    return baseUrl
+    return baseUrl;
 }
