@@ -335,7 +335,7 @@ import BottomNav from "../../components/layout/BottomNav.astro";
         if (iconSpan) iconSpan.textContent = "⛴️";
         if (textSpan) textSpan.textContent = "BUSCAR FERRIES";
       } else {
-        btnTransporte.href = buildFlightsUrl(trip.origen, trip.destino, fSalida);
+        btnTransporte.href = buildFlightsUrl(trip.origen, trip.destino, fSalida, adultos, ninos);
         btnTransporte.className =
           "flex flex-col items-center justify-center bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 p-4 rounded-xl border border-blue-100 dark:border-blue-800 transition-colors shadow-sm";
         if (iconSpan) iconSpan.textContent = "✈️";

@@ -1,9 +1,24 @@
-// Google Flights
-export function buildFlightsUrl(origen: string, destino: string, fecha: string): string {
+//Google Flights
+export function buildFlightsUrl(
+    origen: string, 
+    destino: string, 
+    fecha: string,
+    adultos: number = 1,
+    ninos: number = 0
+): string {
     const cityOrigin = origen.split(',')[0].trim();
     const cityDest = destino.split(',')[0].trim();
     
-    const q = encodeURIComponent(`vuelos de ${cityOrigin} a ${cityDest} el ${fecha}`);
+    let frase = `Flights from ${cityOrigin} to ${cityDest} on ${fecha}`;
+    
+    if (adultos > 1 || ninos > 0) {
+        frase += ` for ${adultos} adults`;
+        if (ninos > 0) {
+            frase += ` and ${ninos} children`;
+        }
+    }
+    
+    const q = encodeURIComponent(frase);
     return `https://www.google.com/travel/flights?q=${q}`;
 }
 

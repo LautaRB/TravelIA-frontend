@@ -48,8 +48,14 @@ export function createPlanOptionCard(
     const tipoTransporte = opcion.medio?.tipo?.toUpperCase() || "AEREO";
     let btnTransporteConfig = {
         texto: "✈️ Vuelos",
-        url: buildFlightsUrl(formValues.origen, formValues.destino, fechaSalida),
-        clases: "...",
+        url: buildFlightsUrl(
+            formValues.origen, 
+            formValues.destino, 
+            fechaSalida, 
+            formValues.cantidad_adultos, 
+            formValues.cantidad_ninos
+        ),
+        clases: "bg-blue-50 hover:bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400",
     };
 
     if (tipoTransporte.includes('TERRESTRE')) {
